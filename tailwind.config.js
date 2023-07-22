@@ -19,11 +19,14 @@ module.exports = {
         'fast-forward-button-texture': "url('/fast-forward-button-texture.svg')",
         'loader-texture': "url('/loader-texture.svg')"
       },
+      backgroundColor: {
+        'popup': 'rgb(var(--popup-bg))'
+      },
       height: {
         '25vw': "25vw",
       },
       width: {
-        '85hw': "85hw"
+        '85vw': "85vw"
       },
       flex: {
         '0': '0 0 auto'
