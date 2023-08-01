@@ -26,7 +26,7 @@
             "resolveSourceMapLocations": [
                 "${workspaceFolder}/**",
                 "!**/node_modules/**"
-              ],
+              ]
         },
         {
             "name": "Next.js: debug full stack",
@@ -43,7 +43,7 @@
               "pattern": "started server on .+, url: (https?://.+)",
               "uriFormat": "%s",
               "action": "debugWithChrome"
-            }
+            },
           }
     ]
 }

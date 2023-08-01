@@ -17,6 +17,7 @@ module.exports = {
         'pause-button-texture': "url('/pause-button-texture.svg')",
         'simple-pause-button-texture': "url('/simple-pause-button-texture.svg')",
         'fast-forward-button-texture': "url('/fast-forward-button-texture.svg')",
+        'plus-button-texture': "url('/plus-texture.svg')",
         'loader-texture': "url('/loader-texture.svg')"
       },
       backgroundColor: {
@@ -30,6 +31,9 @@ module.exports = {
       },
       flex: {
         '0': '0 0 auto'
+      },
+      minHeight:{
+        '30vh': '30vh'
       }
     },
   },

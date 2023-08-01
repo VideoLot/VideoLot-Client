@@ -4,21 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { PlayerContextData, PlayerContext, PlayerState } from "./player-context";
 import { SegmentsLoader } from "./segments-loader";
 import ControlsLayout from "./components/control-layout";
+import { PlayerData } from "@/app/types";
 
-export interface PlayerProps {
-    id: string
-    previewURL: string
-    videoTrack: {
-        trackInfo: {
-            segmentsCount: number
-            duration: number
-            codec: string
-            quality: string
-        }
-    }
-}
-
-export default function Player(props: PlayerProps) {
+export default function Player(props: PlayerData) {
     const segmentsQueue = new Array<{num: number, data: ArrayBuffer}>();
 
     let mediaSourceRef = useRef<MediaSource>();

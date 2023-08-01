@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 1024 1024"
+   class="icon"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="plus-texture.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     id="namedview10"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     showgrid="false"
+     inkscape:zoom="0.295"
+     inkscape:cx="400"
+     inkscape:cy="401.69492"
+     inkscape:window-width="1920"
+     inkscape:window-height="1171"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8" />
+  <path
+     d="M 512,950.23729 C 270.37034,950.23729 73.762712,753.62966 73.762712,512 73.762712,270.37034 270.37034,73.762712 512,73.762712 753.62966,73.762712 950.23729,270.37034 950.23729,512 950.23729,753.62966 753.62966,950.23729 512,950.23729 Z m 0,-803.46356 C 310.59915,146.77373 146.77373,310.59915 146.77373,512 146.77373,713.40085 310.59915,877.22627 512,877.22627 713.40085,877.22627 877.22627,713.40085 877.22627,512 877.22627,310.59915 713.40085,146.77373 512,146.77373 Z"
+     fill="#3688ff"
+     id="path2"
+     style="stroke-width:0.855932" />
+  <path
+     d="M 658.10763,548.54831 H 365.89237 c -20.2,0 -36.5483,-16.34831 -36.5483,-36.54831 0,-20.2 16.3483,-36.54831 36.5483,-36.54831 h 292.12966 c 20.2,0 36.54831,16.34831 36.54831,36.54831 0,20.2 -16.34831,36.54831 -36.46271,36.54831 z"
+     fill="#5f6379"
+     id="path4"
+     style="stroke-width:0.855932" />
+  <path
+     d="m 512,694.57034 c -20.2,0 -36.54831,-16.34831 -36.54831,-36.54831 V 365.89237 c 0,-20.2 16.34831,-36.5483 36.54831,-36.5483 20.2,0 36.54831,16.3483 36.54831,36.5483 v 292.12966 c 0,20.2 -16.34831,36.54831 -36.54831,36.54831 z"
+     fill="#5f6379"
+     id="path6"
+     style="stroke-width:0.855932" />
+</svg>

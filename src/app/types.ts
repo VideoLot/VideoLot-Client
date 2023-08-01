@@ -1,3 +1,5 @@
+import { SubscribtionTier, TrackInfo, UserRole, VideoData, VideoTrack } from '@prisma/client';
+
 export interface VideoPreview {
     title: string
     preview: string
@@ -11,7 +13,7 @@ export type PanelProps = {
     title: string
 }
 
-export type ViewParams = {
+export type ViewProps = {
     view: string
 }
 
@@ -20,6 +22,20 @@ export enum ArrowDirection {
     Right,
     Down,
     Left
+}
+
+export interface PlayerData {
+    id: string
+    previewURL: string
+    videoTrack: {
+        trackInfo: {
+            segmentsCount: number
+            duration: number
+            codec: string
+            quality: string
+        }
+    }
+    avaliableForTiers: [SubscribtionTier]
 }
 
 export interface SegmentRequestBody {
@@ -36,3 +52,19 @@ export interface LayoutBase {
 }
 
 export type VideoDataSequence = Array<ArrayBuffer>; 
+
+export type AuthUser = {
+    name?: string | null | undefined;
+    email?: string | null | undefined;
+    image?: string | null | undefined;
+    role: UserRole;
+}
+
+export type VideoTrackExtended = VideoTrack & {
+    trackInfo: TrackInfo
+}
+
+export type VideoDataExtended = VideoData & {
+    avaliableForTiers: [SubscribtionTier],
+    videoData?: VideoTrackExtended
+};
