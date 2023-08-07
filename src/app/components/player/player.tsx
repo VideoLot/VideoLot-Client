@@ -2,17 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { PlayerContextData, PlayerContext, PlayerState } from "./player-context";
-import { SegmentsLoader } from "./segments-loader";
 import ControlsLayout from "./components/control-layout";
 import { PlayerData } from "@/app/types";
+import { BufferPull } from "./buffer-pull";
 
 export default function Player(props: PlayerData) {
-    const segmentsQueue = new Array<{num: number, data: ArrayBuffer}>();
-
-    let mediaSourceRef = useRef<MediaSource>();
-    let videoSourceRef = useRef<SourceBuffer>();
+    const bufferPullRef = useRef<BufferPull>();
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const segmentsLoaderRef = useRef<SegmentsLoader>();
     const [playerContext, setPlayerContext] = useState({
         state: getCurrentState(),
         isFullScreen: false,
@@ -29,62 +25,25 @@ export default function Player(props: PlayerData) {
             return;
         }
 
-        if (!segmentsLoaderRef.current){
-            const segmentsLoader = new SegmentsLoader(props.id, 
-                props.videoTrack.trackInfo.segmentsCount, 
-                segmentReadyCallback);
-            segmentsLoaderRef.current = segmentsLoader;
-        }
-
-        if (!mediaSourceRef.current) {
+        if (!bufferPullRef.current) {
             const mediaSource = new MediaSource();
-            mediaSourceRef.current = mediaSource;
+            bufferPullRef.current = new BufferPull(mediaSource);
+
             mediaSource.addEventListener('sourceopen', videoSourceOpen);
-            mediaSource.addEventListener('sourceclose', () => {
-                console.log('Source Closed');
-            });
             const mediaURL = URL.createObjectURL(mediaSource);
             video.src = mediaURL; 
         }
     });
 
-    function segmentReadyCallback(num: number, data: ArrayBuffer) {
-        const mediaSource = mediaSourceRef.current;
-        if (mediaSource) {
-            mediaSource.sourceBuffers;
-        }
-        const videoSource = videoSourceRef.current;
-
-        if (!videoSource || videoSource.updating) {
-            const alreadyHas = segmentsQueue.find(x=>x.num === num);
-            if (!alreadyHas) {
-                segmentsQueue.push({num, data});
-            }
-        } else {
-            videoSource.appendBuffer(data);
-        }
-    }
-
     async function videoSourceOpen(event: Event) {
-        console.log('Source Open');
-        const mediaSource = mediaSourceRef.current;
-        if (!mediaSource) {return;}
-
-        const loader = segmentsLoaderRef.current;
-        if (!loader) {
-            return;
-        }
-
-        mediaSource.duration = props.videoTrack.trackInfo.duration / 1000.0;
-        const videoSource = mediaSource.addSourceBuffer('video/webm;codecs="vp8"');
-        videoSourceRef.current = videoSource;
-        videoSource.addEventListener("updateend", (event: Event) => {
-            if (segmentsQueue.length > 0) {
-                const segment = segmentsQueue.shift() as {data: ArrayBuffer};
-                videoSource.appendBuffer(segment.data);
+        const pull = bufferPullRef.current;
+        if (pull) {
+            pull.createSourceWithLoader(props.videoTrack.trackInfo);
+            if (props.audioTracks.length > 0) {
+                pull.createSourceWithLoader(props.audioTracks[0].trackInfo);
             }
-        });
-        await loader.setPlaybackPosition(0);
+            await pull.setPlaybackPosition(0);
+        } 
     }
 
     function setPlayerState(newState: PlayerState) {
@@ -99,8 +58,6 @@ export default function Player(props: PlayerData) {
         if (newState === PlayerState.Paused) {
             video.pause();
         }
-
-        // updateContext({state: newState});
     }
 
     function setFullscreen(isFullScreen: boolean) {
@@ -109,7 +66,7 @@ export default function Player(props: PlayerData) {
 
     async function setCurrentTime(newTime: number) {
         const video = videoRef.current;
-        const loader = segmentsLoaderRef.current;
+        const loader = bufferPullRef.current;
         if (!video || !loader) {
             return;
         }
@@ -149,17 +106,16 @@ export default function Player(props: PlayerData) {
     }
 
     async function playerTimeChanged() {
-        if (!videoRef.current || !segmentsLoaderRef.current) {
+        if (!videoRef.current || !bufferPullRef.current) {
             return;
         }
 
         const currentTime = videoRef.current.currentTime * 1000;
-        const segmentsLoader = segmentsLoaderRef.current;
-        if (segmentsLoader) {
-            await segmentsLoader.setPlaybackPosition(currentTime);
+        const bufferLoaders = bufferPullRef.current;
+        if (bufferLoaders) {
+            await bufferLoaders.setPlaybackPosition(currentTime);
         }
         updateContext({currentTime});
-        console.log(videoRef.current.buffered)
     }
 
     return (

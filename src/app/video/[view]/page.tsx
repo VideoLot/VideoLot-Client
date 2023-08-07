@@ -1,6 +1,6 @@
 import { GetVideosIds, GetVideoData } from '@/utils/videos';
 import { ViewProps } from '../../types';
-import { PlayerData } from '../../components/player/player';
+import { PlayerData } from '@/app/types';
 import { prisma } from '@/utils/db';
 import { PlayerConditional } from '../../components/player/player-conditional';
 

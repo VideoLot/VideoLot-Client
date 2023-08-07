@@ -1,12 +1,12 @@
 'use client'
 
 import TextEditor from '@/app/components/editors/text-editor';
-import { VideoDataExtended, ViewProps } from '@/app/types';
+import { PlayerData, ViewProps } from '@/app/types';
 import { SubscribtionTier } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 export default function Editor(props: {params: ViewProps}) {
-    const [videoData, setVideoData] = useState<VideoDataExtended>();
+    const [videoData, setVideoData] = useState<PlayerData>();
 
     useEffect(() => {
         const getVideoData = async () => {

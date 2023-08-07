@@ -1,6 +1,5 @@
-import { VideoDataExtended } from '@/app/types';
+import { PlayerData } from '@/app/types';
 import { prisma } from './db';
-import { VideoData } from '@prisma/client';
 
 export async function GetVideosForPanel() {
     const videos = await prisma.videoData.findMany();
@@ -14,7 +13,7 @@ export async function GetVideosIds() {
     }));
 }
 
-export async function GetVideoData(id: string): Promise<VideoDataExtended> {
+export async function GetVideoData(id: string): Promise<PlayerData> {
     return await prisma.videoData.findFirst({
         where: { id: id},
         include: {
@@ -23,7 +22,12 @@ export async function GetVideoData(id: string): Promise<VideoDataExtended> {
                     trackInfo: true
                 }
             },
+            audioTracks: {
+                include: {
+                    trackInfo: true
+                }
+            },
             avaliableForTiers: true
         }
-    }) as unknown as VideoDataExtended;
+    }) as unknown as PlayerData;
 }

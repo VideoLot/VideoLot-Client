@@ -24,26 +24,17 @@ export enum ArrowDirection {
     Left
 }
 
-export interface PlayerData {
-    id: string
-    previewURL: string
+export type PlayerData = VideoData & {
     videoTrack: {
-        trackInfo: {
-            segmentsCount: number
-            duration: number
-            codec: string
-            quality: string
-        }
+        trackInfo: TrackInfo
     }
-    avaliableForTiers: [SubscribtionTier]
+    audioTracks: [{trackInfo: TrackInfo}]
+    avaliableForTiers: SubscribtionTier[]
 }
 
 export interface SegmentRequestBody {
-    video: string
-    quality: string
+    trackId: string
     segment: number
-    contentType: string
-    track?: string
 }
 
 export interface LayoutBase {
@@ -63,8 +54,3 @@ export type AuthUser = {
 export type VideoTrackExtended = VideoTrack & {
     trackInfo: TrackInfo
 }
-
-export type VideoDataExtended = VideoData & {
-    avaliableForTiers: [SubscribtionTier],
-    videoData?: VideoTrackExtended
-};

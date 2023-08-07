@@ -1,8 +1,9 @@
-import Player, { PlayerData } from './player';
+import Player from './player';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/auth-options';
 import { prisma } from '@/utils/db';
 import { UserRole } from '@prisma/client';
+import { PlayerData } from '@/app/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,9 +38,17 @@ export async function PlayerConditional({ data }: { data: PlayerData; }) {
         return null;
     }
     if (higherThanUser || userTierMatch) {
-        return <Player id={data.id} 
+        return <Player id={data.id}
+                    title={data.title} 
                     previewURL={data.previewURL} 
+                    alt={data.alt}
+                    tags={data.tags}
+                    views={data.views}
+                    updatedAt={data.updatedAt}
+                    createdAt={data.createdAt}
+                    uploadedDate={data.uploadedDate}
                     videoTrack={data.videoTrack} 
+                    audioTracks={data.audioTracks}
                     avaliableForTiers={data.avaliableForTiers}></Player>;
     }
     return <p>Video unavailable</p>
