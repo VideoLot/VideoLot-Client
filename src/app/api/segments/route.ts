@@ -23,20 +23,6 @@ export async function POST(req: Request) {
 
     const filepath = `${trackInfo.trackPath}/part${body.segment}.${extension}`;
     const storageObject = await storage.getObject(filepath);
-    // const ftpClient = await GetFtpClient();
-    // const filepath = `${trackInfo.trackPath}/part${body.segment}.${extension}`;
-    // console.log(filepath);
-    // const ftpResponse = await ftpClient.downloadTo(ftpStream, filepath);
-
-    // const fetchData = new ReadableStream<Buffer>({
-    //     type: 'bytes',
-    //     start (controller: ReadableStreamDefaultController) {},
-    //     pull (controller: ReadableStreamDefaultController) {
-    //         controller.enqueue(videoData)
-    //         controller.close();
-    //     },
-    //     cancel() {},
-    // } as unknown as UnderlyingDefaultSource);
 
     const responseHeaders = new Headers(req.headers);
     responseHeaders.set('Content-Type', trackInfo.codec);
