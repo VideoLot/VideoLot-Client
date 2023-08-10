@@ -5,6 +5,7 @@ import { AuthOptions, TokenSet } from 'next-auth';
 import { prisma } from '@/utils/db';
 import { User } from '@prisma/client';
 
+
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
@@ -18,20 +19,20 @@ export const authOptions = {
                 host: process.env.EMAIL_SERVER_HOST as string,
                 port: process.env.EMAIL_SERVER_PORT as string,
                 auth: {
-                  user: process.env.EMAIL_SERVER_USER as string,
-                  pass: process.env.EMAIL_SERVER_PASSWORD as string,
+                    user: process.env.EMAIL_SERVER_USER as string,
+                    pass: process.env.EMAIL_SERVER_PASSWORD as string,
                 },
             },
             from: process.env.EMAIL_FROM as string,
         })
     ],
     callbacks: {
-        session({session, user}) {
+        session({ session, user }) {
             if (session && session.user) {
                 const adoptedUser = user as any;
-                const updatedUser = session.user as any; 
+                const updatedUser = session.user as any;
                 updatedUser.role = adoptedUser.role;
-            }         
+            }
             return session;
         }
     }
@@ -39,5 +40,5 @@ export const authOptions = {
 
 
 async function profile(profile: any, tokens: TokenSet): Promise<User> {
-    return {role: profile.role ?? 'user', ...profile};
+    return { role: profile.role ?? 'user', ...profile };
 }

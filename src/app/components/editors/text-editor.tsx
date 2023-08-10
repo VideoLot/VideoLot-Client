@@ -2,7 +2,8 @@
 import { useState } from "react";
 
 export interface TextEditorProps {
-    text: string
+    text?: string
+    placeholder?: string
     apply: (value: string) => void;
 }
 
@@ -14,8 +15,8 @@ export default function TextEditor(props: TextEditorProps) {
     return (
         <div className="flex flex-col w-full" onClick={() => setIsEditMode(true)}>
             {isEditMode ? 
-                <EditMode text={props.text} apply={props.apply} cancel={cancel}/> : 
-                <DisplayMode text={props.text}/>}
+                <EditMode text={props.text || ''} apply={props.apply} cancel={cancel}/> : 
+                <DisplayMode text={props.text || props.placeholder || ''}/>}
         </div>
     );
 }

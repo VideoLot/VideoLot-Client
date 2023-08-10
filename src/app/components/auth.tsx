@@ -5,7 +5,7 @@ import { SessionProvider, useSession, signIn, signOut } from 'next-auth/react';
 import ViPopup from './popup';
 
 export default function AuthControls() {
-    const {update, data, status} = useSession();
+    const {data, status} = useSession();
     const [signInOpen, setSignInOpen] = useState(false);
 
     const closeSignIn = () => setSignInOpen(false);
