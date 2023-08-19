@@ -3,7 +3,7 @@
 import ClientGuard from '@/app/components/client-guard';
 import TextEditor from '@/app/components/editors/text-editor';
 import { UserRole, VideoData } from '@prisma/client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function VideoUpload() {
 
@@ -19,10 +19,11 @@ function Error() {
 
 function Form() {
     const createVideoUrl = new URL('api/video', process.env.NEXT_PUBLIC_API_URL);
-
-    const videoInputRef = useRef<HTMLInputElement>(null);
-    const previewInputRef = useRef<HTMLInputElement>(null);
     const [videoData, setVideoData] = useState<VideoData>();
+    const [currentChunk, setCurrentChunk] = useState(null);
+    const videoRef = useRef<File | null>(null);
+    const previewRef = useRef<File | null>(null);
+
 
     const handleTitleApply = (value: string) => {
         const newVideoData = {...videoData} as VideoData;
@@ -36,18 +37,36 @@ function Form() {
         setVideoData(newVideoData);
     }
 
+    const handleVideoSelect = (e: any) => {
+        const input = e.target as HTMLInputElement;
+        if (!input || !input.files || input.files.length !== 1) {
+            return;
+        }
+
+        videoRef.current = input.files.item(0);
+    }
+
+    const handlePreviewSelect = (e: any) => {
+        const input = e.target as HTMLInputElement;
+        if (!input || !input.files || input.files.length !== 1) {
+            return;
+        }
+
+        previewRef.current = input.files.item(0);
+    }
+
     const handleUpload = async () => {
         if(!videoData) {
             return;
         }
 
-        const videoInput = videoInputRef.current;
-        if (!videoInput || !videoInput.value) {
+        const video = videoRef.current;
+        if (!video) {
             return;
         }
 
-        const previewInput = previewInputRef.current;
-        if (!previewInput || !previewInput.value) {
+        const preview = previewRef.current;
+        if (!preview) {
             return;
         }
 
@@ -65,15 +84,22 @@ function Form() {
             const newData = await response.json() as VideoData;
             setVideoData(newData);
         }
+
+
+        
     }
+
+    useEffect(() => {
+        
+    }, [currentChunk]);
 
     return (
     <div className='flex flex-col'>
         <TextEditor placeholder='Enter video title' text={videoData?.title} apply={handleTitleApply}></TextEditor>
         <label>Select video file:</label>
-        <input ref={videoInputRef} type='file' accept='.mp4,.mov,.avi,.webm'></input>
+        <input onChange={handleVideoSelect} type='file' accept='.mp4,.mov,.avi,.webm'></input>
         <label>Select preview image</label>
-        <input ref={previewInputRef} type='file' accept='.jpeg,.jpg,.png'></input>
+        <input onChange={handlePreviewSelect} type='file' accept='.jpeg,.jpg,.png'></input>
         <TextEditor placeholder='Enter preview description' text={videoData?.alt} apply={handlePreviewDescApply}></TextEditor>        
         <button onClick={handleUpload} className='h-8 bg-blue-600 text-gray-200 rounded-md'>UPLOAD</button>
     </div>

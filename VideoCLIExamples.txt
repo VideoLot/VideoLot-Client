@@ -1,6 +1,0 @@
-extract video data from file split it to segments 2 seconds long each
-ffmpeg -i D:\ftp\bbb(full).mp4 -an -map_metadata -1 -map 0 -c:v libvpx -crf 10 -qmax 40 -b:v 2.5M -cpu-used 16 -n -f segment -segment_time 2 -force_key_frames expr:gte(t,n_forced*2) "part%d.webm" 
-
-extract two audio files 
-ffmpeg -i D:\FTP\bbb(full).mp4 -map 0:1 track1/track1.mp3 -map 0:2 track2/track2.ac3
-
