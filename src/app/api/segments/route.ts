@@ -1,10 +1,9 @@
 import { SegmentRequestBody } from '@/app/types';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
-import { StorageApi } from '../_lib/storage-api/storage-api';
-import { SelectelStorageApi } from '../_lib/storage-api/selectel-api';
+import { createStorageApi, StorageApi } from 'videolee-cloud-wrapper';
 
-const storage: StorageApi = new SelectelStorageApi();
+const storage: StorageApi = createStorageApi();
 
 export async function POST(req: Request) {
     const body = (await req.json()) as SegmentRequestBody;
