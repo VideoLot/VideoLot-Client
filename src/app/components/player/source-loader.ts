@@ -1,5 +1,6 @@
-import { SegmentRequestBody } from "@/app/types";
+import { get } from "@/utils/fetch";
 import { TrackInfo } from "@prisma/client";
+import { SEGMENTS } from '@/app/constants'
 
 
 export class SourceLoader {
@@ -54,14 +55,9 @@ export class SourceLoader {
     }
 
     async loadSegment(segmentNumber: number) {
-        const fragmentResponse = await fetch(this._fragmentEndpoint, {
-            method: 'POST',
-            body: JSON.stringify({
-                trackId: this._trackInfo.id,
-                segment: segmentNumber,
-            } as SegmentRequestBody)
-        });
-
-        return fragmentResponse;
+        return await get(SEGMENTS)
+            .withParam('trackId', this._trackInfo.id)
+            .withParam('segment', segmentNumber.toString())
+            .send();
     }
 }

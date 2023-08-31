@@ -15,6 +15,8 @@ export async function POST(req: Request) {
     }
 
     const reqData = await req.json() as VideoData;
-    const result = await prisma.videoData.create({data: reqData});
+    const result = await prisma.videoData.create({
+        data: reqData
+    });
     return NextResponse.json(result);
 }

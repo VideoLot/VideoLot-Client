@@ -2,6 +2,9 @@
 
 import ClientGuard from '@/app/components/client-guard';
 import TextEditor from '@/app/components/editors/text-editor';
+import MultipartUpload from '@/app/components/multipart-upload';
+import { UPLOAD_FILE_FOR_VIDEO, VIDEO } from '@/app/constants';
+import { post } from '@/utils/fetch';
 import { UserRole, VideoData } from '@prisma/client';
 import { useEffect, useRef, useState } from 'react';
 
@@ -20,9 +23,9 @@ function Error() {
 function Form() {
     const createVideoUrl = new URL('api/video', process.env.NEXT_PUBLIC_API_URL);
     const [videoData, setVideoData] = useState<VideoData>();
-    const [currentChunk, setCurrentChunk] = useState(null);
     const videoRef = useRef<File | null>(null);
     const previewRef = useRef<File | null>(null);
+    const [videoFile, setVideoFile] = useState<File | null>(null);
 
 
     const handleTitleApply = (value: string) => {
@@ -70,34 +73,30 @@ function Form() {
             return;
         }
 
-        videoData.views = 0;
-        videoData.uploadedDate = new Date();
-        videoData.alt = videoData.alt || '';
-        videoData.previewURL = '';
+        if (!videoData.id) {
+            videoData.views = 0;
+            videoData.uploadedDate = new Date();
+            videoData.alt = videoData.alt || '';
+            videoData.previewURL = '';
+            const response = await post(VIDEO).withJsonBody(videoData).send();
 
-        const response = await fetch(createVideoUrl, {
-            method: 'POST', 
-            body: JSON.stringify(videoData)
-        });
-
-        if(response.ok) {
-            const newData = await response.json() as VideoData;
-            setVideoData(newData);
+            if (response.ok) {
+                const newData = await response.json() as VideoData;
+                setVideoData(newData);
+            }
         }
-
-
         
+        setVideoFile(video);
     }
-
-    useEffect(() => {
-        
-    }, [currentChunk]);
 
     return (
     <div className='flex flex-col'>
         <TextEditor placeholder='Enter video title' text={videoData?.title} apply={handleTitleApply}></TextEditor>
         <label>Select video file:</label>
-        <input onChange={handleVideoSelect} type='file' accept='.mp4,.mov,.avi,.webm'></input>
+        <MultipartUpload uploadPath={UPLOAD_FILE_FOR_VIDEO(videoData?.id)} chunkSize={1024 * 1024 * 2} files={videoFile ? [videoFile]: undefined}>
+            <input onChange={handleVideoSelect} type='file' accept='.mp4,.mov,.avi,.webm'></input>
+        </MultipartUpload>
+        
         <label>Select preview image</label>
         <input onChange={handlePreviewSelect} type='file' accept='.jpeg,.jpg,.png'></input>
         <TextEditor placeholder='Enter preview description' text={videoData?.alt} apply={handlePreviewDescApply}></TextEditor>        

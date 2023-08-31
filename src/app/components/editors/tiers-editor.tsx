@@ -1,15 +1,16 @@
 'use client'
 
-import { SubscribtionTier } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { SubscribtionTier } from '@prisma/client';
+import { useEffect, useState } from 'react';
+import { get, put } from '@/utils/fetch';
+import { THIS_VIDEO, TIER_LIST } from '@/app/constants';
 
 export function TiersEditor({activeTiersInit, videoId} : {activeTiersInit: string[], videoId: string}) {
-    const url = new URL(`/api/tier/list`, process.env.NEXT_PUBLIC_API_URL);
     const [tiers, setTiers] = useState<[SubscribtionTier]>();
     const [activeTiers, setActiveTiers] = useState(activeTiersInit);
     useEffect(() => {
         const getTiers = async () => {
-            const response = await fetch(url);
+            const response = await get(TIER_LIST).send();
             if (response.ok) {
                 const tiersData = await response.json() as [SubscribtionTier];
                 setTiers(tiersData);
@@ -33,14 +34,11 @@ export function TiersEditor({activeTiersInit, videoId} : {activeTiersInit: strin
     };
 
     const handleApply = async () => {
-        const url = new URL(`/api/video/${videoId}`, process.env.NEXT_PUBLIC_API_URL);
-
-        const response = await fetch(url, {
-            method: 'PUT',
-            body: JSON.stringify({
+        const response = await put(THIS_VIDEO(videoId))
+            .withJsonBody({
                 avaliableForTiers: activeTiers
             })
-        });
+            .send();
         if (response.ok) {
             console.log('Applied');
         }

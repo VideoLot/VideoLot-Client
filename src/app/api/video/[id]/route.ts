@@ -1,21 +1,18 @@
 import { prisma } from "@/utils/db";
 import { updateHeaders } from "@/utils/http";
 import { GetVideoData } from "@/utils/videos";
-import { headers } from "next/dist/client/components/headers";
 import { NextResponse } from "next/server";
+import { VideoIdParams } from "../../_lib/types";
 
-interface Params {
-    id: string
-}
 
-export async function GET(req: Request, {params}: {params: Params}) {
+export async function GET(req: Request, {params}: {params: VideoIdParams}) {
     const videoData = await GetVideoData(params.id);
 
     const responseHeaders = updateHeaders(req.headers);
     return NextResponse.json(videoData, {headers: responseHeaders});
 }
 
-export async function PUT(req: Request, {params}: {params: Params}) {
+export async function PUT(req: Request, {params}: {params: VideoIdParams}) {
     const videoData = await GetVideoData(params.id);
     const reqData = await req.json();
     const data = {} as any;
