@@ -47,6 +47,13 @@ class Send {
         return this;
     }
 
+    withFormData(data: FormData) {
+        this._body = data;
+        // this.withHeader('Content-Type', 'multipart/form-data');
+
+        return this;
+    }
+
     withParam(name: string, value: string) {
         if (!this._params) {
             this._params = new URLSearchParams();
