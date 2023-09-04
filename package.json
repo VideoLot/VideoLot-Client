@@ -1,7 +1,11 @@
 {
-  "name": "videolee-client",
+  "name": "@videolot/videolot-client",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:VideoLot/VideoLot-Client.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -30,7 +34,8 @@
     "reactjs-popup": "^2.0.5",
     "tailwindcss": "3.3.2",
     "typescript": "5.1.6",
-    "videolee-cloud-wrapper": "file:../Videolee-Cloud-Wrapper"
+    "videolee-cloud-wrapper": "file:../Videolee-Cloud-Wrapper",
+    "@videolot/videolot-prisma": "1.0.0"
   },
   "devDependencies": {
     "next-auth": "^4.22.3",
