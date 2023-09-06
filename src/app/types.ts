@@ -1,4 +1,4 @@
-import { SubscribtionTier, TrackInfo, UserRole, VideoData, VideoTrack } from '@prisma/client';
+import { SubscribtionTier, TrackInfo, UserRole, VideoData, VideoTrack } from '@videolot/videolot-prisma';
 
 export interface VideoPreview {
     title: string
@@ -53,4 +53,20 @@ export type AuthUser = {
 
 export type VideoTrackExtended = VideoTrack & {
     trackInfo: TrackInfo
+}
+
+export enum PanelContentType {
+    List,
+    Request
+}
+
+export interface PanelRequestVariant {
+    include: string[]
+    exclude: string[]
+    isStrict: boolean
+}
+
+export interface PanelContentData {
+    type: PanelContentType
+    content: PanelRequestVariant[] | string[]
 }

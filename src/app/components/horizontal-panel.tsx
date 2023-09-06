@@ -1,8 +1,9 @@
-import { PanelProps } from "@/app/types";
+import { PanelContentData, PanelProps } from "@/app/types";
 import Preview from "./preview";
 import { GetVideosForPanel } from "@/utils/videos";
+import { Panel } from "@videolot/videolot-prisma";
 
-export default async function HorizontalVideoPanel(props: PanelProps) {
+export default async function HorizontalVideoPanel(props: Panel) {
     const videos = await GetVideosForPanel();
     
     return (
