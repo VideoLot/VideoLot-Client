@@ -18,7 +18,8 @@ module.exports = {
         'simple-pause-button-texture': "url('/simple-pause-button-texture.svg')",
         'fast-forward-button-texture': "url('/fast-forward-button-texture.svg')",
         'plus-button-texture': "url('/plus-texture.svg')",
-        'loader-texture': "url('/loader-texture.svg')"
+        'loader-texture': "url('/loader-texture.svg')",
+        'settings-texture': "url('/settings-texture.svg')"
       },
       backgroundColor: {
         'popup': 'rgb(var(--popup-bg))'

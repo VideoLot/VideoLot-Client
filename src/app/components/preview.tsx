@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { VideoData } from '@prisma/client';
+import { VideoData } from '@videolot/videolot-prisma';
 import Link from 'next/link';
 
 type VideoPreviewProps = {
