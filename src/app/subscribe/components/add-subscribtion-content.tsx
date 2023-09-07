@@ -1,6 +1,6 @@
 'use client'
 
-import { SubscribtionTier } from '@prisma/client';
+import { SubscribtionTier } from '@videolot/videolot-prisma';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react'
 

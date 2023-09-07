@@ -1,6 +1,6 @@
 'use client'
 
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@videolot/videolot-prisma';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import { AuthUser } from '../types';

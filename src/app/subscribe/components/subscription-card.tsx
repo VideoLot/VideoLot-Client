@@ -1,4 +1,4 @@
-import { SubscribtionTier } from "@prisma/client";
+import { SubscribtionTier } from "@videolot/videolot-prisma";
 
 interface SubscriptionCardProps {
     children: React.ReactNode

@@ -2,7 +2,7 @@ import Player from './player';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/auth-options';
 import { prisma } from '@/utils/db';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@videolot/videolot-prisma';
 import { PlayerData } from '@/app/types';
 
 export const dynamic = 'force-dynamic';

@@ -1,5 +1,5 @@
 import { get } from "@/utils/fetch";
-import { TrackInfo } from "@prisma/client";
+import { TrackInfo } from "@videolot/videolot-prisma";
 import { SEGMENTS } from '@/app/constants'
 
 

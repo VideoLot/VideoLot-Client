@@ -2,7 +2,7 @@ import { AuthUser } from '@/app/types';
 import { authOptions } from '@/utils/auth-options';
 import { prisma } from '@/utils/db';
 import { updateHeaders } from '@/utils/http';
-import { SubscribtionTier, UserRole } from '@prisma/client';
+import { SubscribtionTier, UserRole } from '@videolot/videolot-prisma';
 import { getServerSession } from 'next-auth/next';
 import { NextResponse } from 'next/server';
 

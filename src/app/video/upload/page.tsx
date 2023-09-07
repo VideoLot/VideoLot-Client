@@ -5,7 +5,7 @@ import TextEditor from '@/app/components/editors/text-editor';
 import MultipartUpload from '@/app/components/multipart-upload';
 import { THIS_PICK, UPLOAD_FILE_FOR_VIDEO, VIDEO } from '@/app/constants';
 import { post } from '@/utils/fetch';
-import { UserRole, VideoData } from '@prisma/client';
+import { UserRole, VideoData } from '@videolot/videolot-prisma';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image'
 

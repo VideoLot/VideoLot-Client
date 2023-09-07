@@ -1,6 +1,6 @@
 import { updateHeaders } from "@/utils/http";
 import { NextRequest, NextResponse } from "next/server";
-import { createStorageApi } from 'videolee-cloud-wrapper';
+import { createStorageApi } from 'videolot-cloud-wrapper';
 
 const storage = createStorageApi();
 

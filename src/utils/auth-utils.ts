@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@videolot/videolot-prisma';
 
 const UNAUTH = 'unauthenticated';
 const HIERARCHY = [UNAUTH, UserRole.User, UserRole.Moderator, UserRole.Admin];

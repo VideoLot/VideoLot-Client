@@ -1,6 +1,6 @@
 'use client'
 
-import { SubscribtionTier } from '@prisma/client';
+import { SubscribtionTier } from '@videolot/videolot-prisma';
 import { useEffect, useState } from 'react';
 import { get, put } from '@/utils/fetch';
 import { THIS_VIDEO, TIER_LIST } from '@/app/constants';
