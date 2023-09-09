@@ -19,7 +19,8 @@ module.exports = {
         'fast-forward-button-texture': "url('/fast-forward-button-texture.svg')",
         'plus-button-texture': "url('/plus-texture.svg')",
         'loader-texture': "url('/loader-texture.svg')",
-        'settings-texture': "url('/settings-texture.svg')"
+        'settings-texture': "url('/settings-texture.svg')",
+        'closure-texture': "url(/closure-texture.svg)"
       },
       backgroundColor: {
         'popup': 'rgb(var(--popup-bg))'

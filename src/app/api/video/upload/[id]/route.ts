@@ -1,8 +1,8 @@
-import { VideoIdParams } from "@/app/api/_lib/types";
+import { IdParam } from "@/app/api/_lib/types";
 import { post } from "@/utils/fetch";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, {params}: {params: VideoIdParams}) {
+export async function POST(req: NextRequest, {params}: {params: IdParam}) {
     const filename = req.nextUrl.searchParams.get('name') as string;
     const fullSize = req.nextUrl.searchParams.get('size') as string;
     const currentChunkIndex = req.nextUrl.searchParams.get('currentChunkIndex') as string;

@@ -1,14 +1,18 @@
-import { PanelContentData, PanelProps } from "@/app/types";
-import Preview from "./preview";
+import Preview from "../preview";
 import { GetVideosForPanel } from "@/utils/videos";
 import { Panel } from "@videolot/videolot-prisma";
-import SettingsWrapper from "./settings-wrapper";
+import SettingsWrapper from "../settings-wrapper";
+import PanelSettings from "./panel-settings";
 
 export default async function HorizontalVideoPanel(props: Panel) {
     const videos = await GetVideosForPanel();
     
+    const panelSettings = () => {
+        return <PanelSettings panel={props}></PanelSettings>
+    }
+
     return (
-        <SettingsWrapper settings={PanelSettings()}>
+        <SettingsWrapper settings={panelSettings()}>
             <div>
                 <div>
                     <h2>{props.title}</h2>
@@ -20,11 +24,9 @@ export default async function HorizontalVideoPanel(props: Panel) {
                         ))
                     }
                 </div>
+                <PanelSettings panel={props}></PanelSettings>
             </div>
         </SettingsWrapper> 
     );
 } 
 
-export function PanelSettings() {
-    return <h1>PANEL SETTINGS</h1>
-}

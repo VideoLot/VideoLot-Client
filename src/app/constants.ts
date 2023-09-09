@@ -6,4 +6,4 @@ export const THIS_VIDEO = (videoId: string) => `api/video/${videoId}`;
 export const VIDEOS = 'api/videos';
 export const UPLOAD_FILE_FOR_VIDEO = (videoId: string | undefined) => `api/video/upload/${videoId || ''}`;
 export const THIS_PICK = (filename: string) => `api/content/${filename}`;
- 
+export const THIS_PANEL = (panelId: string) => `api/panel/${panelId}`;

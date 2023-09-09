@@ -55,18 +55,27 @@ export type VideoTrackExtended = VideoTrack & {
     trackInfo: TrackInfo
 }
 
-export enum PanelContentType {
+export enum PanelFilterType {
     List,
-    Request
+    Categories
+}
+
+export interface CategoryFilter {
+    id: string
+    not: boolean
 }
 
 export interface PanelRequestVariant {
-    include: string[]
-    exclude: string[]
+    categories: CategoryFilter[]
     isStrict: boolean
 }
 
 export interface PanelContentData {
-    type: PanelContentType
-    content: PanelRequestVariant[] | string[]
+    type: PanelFilterType
+    filter: PanelRequestVariant[] | string[]
+}
+
+export interface NameValue {
+    name: string
+    value: string
 }

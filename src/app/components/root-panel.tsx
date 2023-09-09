@@ -1,7 +1,7 @@
 import { prisma } from '@/utils/db'
 import { PanelType } from '@videolot/videolot-prisma'
 import { PanelContentData } from '../types';
-import HorizontalVideoPanel from './horizontal-panel';
+import HorizontalVideoPanel from './panels/horizontal-panel';
 
 interface RootPanelProps {
     path: string
@@ -20,7 +20,7 @@ export default async function RootPanel( props: RootPanelProps) {
         return <h1> ERROR </h1>
     }
     
-    const panelIds = data.content as string[];
+    const panelIds = data.filter as string[];
     const panels = await prisma.panel.findMany({
         where: {id: {in: panelIds}}
     });

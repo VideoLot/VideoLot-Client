@@ -1,3 +1,3 @@
-export interface VideoIdParams {
+export interface IdParam {
     id: string
 }

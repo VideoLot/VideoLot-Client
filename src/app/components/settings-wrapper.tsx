@@ -22,8 +22,7 @@ export default function SettingsWrapper(props: SettingsWrapperProps) {
 
     return (
         <div className='relative'>
-            <ClientGuard minimalRole={UserRole.Admin} allowed={editButton()} restricted={<></>}>
-            </ClientGuard>
+            <ClientGuard minimalRole={UserRole.Admin} allowed={editButton()} restricted={<></>}/>
             
             {props.children}
             <ViPopup isOpen={settingsOpened} onClose={()=>{setSettingsOpened(false)}}>
