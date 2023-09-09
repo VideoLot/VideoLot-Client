@@ -3,7 +3,7 @@ import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { AuthOptions, TokenSet } from 'next-auth';
 import { prisma } from '@/utils/db';
-import { User } from '@prisma/client';
+import { User } from '@videolot/videolot-prisma';
 
 
 export const authOptions = {

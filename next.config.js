@@ -1,4 +1,5 @@
-const { PrismaPlugin } = require('@prisma/nextjs-monorepo-workaround-plugin')
+const { PrismaPlugin } = require('@prisma/nextjs-monorepo-workaround-plugin');
+const { CopyPrisma } = require('./copy-prisma');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -16,11 +17,11 @@ const nextConfig = {
     },
     webpack: (config, { isServer }) => {
         if (isServer) {
-          config.plugins = [...config.plugins, new PrismaPlugin()]
+          config.plugins = [...config.plugins, new CopyPrisma()];
         }
     
-        return config
+        return config;
     }
 }
 
-module.exports = nextConfig
+module.exports = nextConfig;
