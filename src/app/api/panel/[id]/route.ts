@@ -15,6 +15,7 @@ export async function GET(req: NextRequest, {params}: {params: IdParam}) {
 export async function PUT(req:NextRequest, {params}: {params: IdParam}) {
     const headers = updateHeaders(req.headers);
     const newData = await req.json();
+    console.log('PARAM: ', params.id);
     const panel = await prisma.panel.update({
         where: { id: params.id },
         data: newData
