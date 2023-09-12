@@ -3,6 +3,7 @@
 import { CategoryFilter, NameValue, PanelRequestVariant } from '@/app/types';
 import { ChangeEvent, useState } from 'react';
 import Image from 'next/image';
+import ViButton, { ViButtonColor } from '../vi-button';
 
 type CategoryChangeValue = {action: 'removed' | 'edited', index: number, value?: CategoryFilter};
 interface CategoryFilterProps {
@@ -16,23 +17,22 @@ export function CategoryFilter(props: CategoryFilterProps) {
         { name: 'Two', value: 'two' },
         { name: 'Three', value: 'three' }
     ];
-    const [variants, setVariants] = useState(props.filter);
 
     const handleAddClicked = () => {
-        setVariants([...variants, {categories: [], isStrict: false}]);
+        props.onChange([...props.filter, {categories: [], isStrict: false}]);
     }
 
     const handleVariantChange = (variant: PanelRequestVariant, i: number) => {
-        const updated = [...variants];
+        const updated = [...props.filter];
         updated[i] = variant;
-        setVariants(updated);
+        props.onChange(updated);
     }
 
     return <>
         <h1>Category filter</h1>
         <div className='flex flex-col gap-2'>
             {
-                variants.map((x, i) => <>
+                props.filter.map((x, i) => <>
                     <Variant options={options} data={x} index={i} onChange={handleVariantChange}/>
                 </>)
             }
@@ -78,7 +78,7 @@ function Variant({ data, options, index, onChange }: { data: PanelRequestVariant
         }, index);
     }
 
-    return <div className='flex flex-row gap-x-2 items-center'>
+    return <div className='flex flex-row gap-x-2 items-center flex-wrap'>
         {data.categories.map((x, i) => 
         <>
             {i !== 0 ? <h1>and</h1> : null}
@@ -143,10 +143,10 @@ function CategorySelector({ options, value, index, onChange }: { options: NameVa
 }
 
 function AddButton({text, onClick}: {text: string, onClick: ()=>void}) {
-    return <button onClick={onClick}>
+    return <ViButton color={ViButtonColor.SemiBlue} onClick={onClick}>
     <div className='flex items-center h-10 bg-blue-100 rounded-md p-1'>
         <Image width={30} height={30} src='/plus-texture.svg' alt='plus sign'></Image>
         {text}
     </div>
-</button>
+</ViButton>
 }

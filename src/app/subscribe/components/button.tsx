@@ -1,7 +1,7 @@
 'use client'
 
 import { AuthUser } from '@/app/types';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@videolot/videolot-prisma';
 import { useSession } from 'next-auth/react';
 import { NavigateOptions } from 'next/dist/shared/lib/app-router-context';
 import { useRouter } from 'next/navigation';
