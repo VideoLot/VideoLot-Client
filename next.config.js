@@ -1,4 +1,3 @@
-const { PrismaPlugin } = require('@prisma/nextjs-monorepo-workaround-plugin');
 const { CopyPrisma } = require('./copy-prisma');
 
 /** @type {import('next').NextConfig} */

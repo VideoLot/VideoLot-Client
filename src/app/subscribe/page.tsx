@@ -4,7 +4,7 @@ import TierContent from './components/tier-content';
 import AddSubscription from './components/add-subscribtion-content';
 import { getServerSession } from 'next-auth';
 import { AuthUser } from '../types';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@videolot/videolot-prisma';
 import { authOptions } from '@/utils/auth-options';
 
 export default async function Subscription() {
