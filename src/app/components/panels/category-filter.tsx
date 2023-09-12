@@ -1,9 +1,12 @@
 'use client';
 
 import { CategoryFilter, NameValue, PanelRequestVariant } from '@/app/types';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Image from 'next/image';
 import ViButton, { ViButtonColor } from '../vi-button';
+import { CATEGORIES } from '@/app/constants';
+import { get } from '@/utils/fetch';
+import { Category } from '@videolot/videolot-prisma';
 
 type CategoryChangeValue = {action: 'removed' | 'edited', index: number, value?: CategoryFilter};
 interface CategoryFilterProps {
@@ -12,11 +15,26 @@ interface CategoryFilterProps {
 }
 
 export function CategoryFilter(props: CategoryFilterProps) {
-    const options = [
-        { name: 'One', value: 'one' },
-        { name: 'Two', value: 'two' },
-        { name: 'Three', value: 'three' }
-    ];
+    const [options, setOptions] = useState<NameValue[]>([]);
+
+    useEffect(() => {
+        const getCategories = async() => {
+            const response = await get(CATEGORIES).send();
+            if (response.ok) {
+                const cats = await response.json() as Category[]; // =^_^=
+                const newOptions = cats.map(x => 
+                    {
+                        return {
+                            name: x.name,
+                            value: x.id
+                        } as NameValue;
+                    } 
+                );
+                setOptions(newOptions)
+            }
+        }
+        getCategories();
+    }, []);
 
     const handleAddClicked = () => {
         props.onChange([...props.filter, {categories: [], isStrict: false}]);
@@ -33,7 +51,7 @@ export function CategoryFilter(props: CategoryFilterProps) {
         <div className='flex flex-col gap-2'>
             {
                 props.filter.map((x, i) => <>
-                    <Variant options={options} data={x} index={i} onChange={handleVariantChange}/>
+                    <Variant key={Math.random()} options={options} data={x} index={i} onChange={handleVariantChange}/>
                 </>)
             }
             
@@ -82,7 +100,7 @@ function Variant({ data, options, index, onChange }: { data: PanelRequestVariant
         {data.categories.map((x, i) => 
         <>
             {i !== 0 ? <h1>and</h1> : null}
-            <CategorySelector options={options} value={x} index={i} onChange={handleSelectorChange} />
+            <CategorySelector key={Math.random()} options={options} value={x} index={i} onChange={handleSelectorChange} />
         </>)}
         <label>
             <input type='checkbox' checked={data.isStrict} onChange={handleStrictChanged}></input>
@@ -128,7 +146,7 @@ function CategorySelector({ options, value, index, onChange }: { options: NameVa
         <div className={`flex flex-col ${color} p-2 rounded-md`}>
             <div className='flex flex-row'>
                 <select className='bg-transparent' defaultValue={value.id} onChange={handleCategoryChangeValue}>
-                    {options.map(x => <option value={x.value}>{x.name}</option>)}
+                    {options.map((x, i) => <option key={Math.random()} value={x.value}>{x.name}</option>)}
                 </select>
                 <button className='bg-closure-texture bg-cover bg-center w-6 h-6' onClick={handleRemoveClicked}></button>
             </div>

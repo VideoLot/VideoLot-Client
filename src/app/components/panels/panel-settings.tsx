@@ -1,12 +1,13 @@
 'use client'
 
 import { PanelContentData, PanelFilterType, PanelRequestVariant } from "@/app/types";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { CategoryFilter } from './category-filter';
-import { Panel } from '@videolot/videolot-prisma';
+import { Panel, VideoData } from '@videolot/videolot-prisma';
 import ViButton, { ViButtonColor } from '../vi-button';
-import { put } from '@/utils/fetch';
-import { THIS_PANEL } from '@/app/constants';
+import { post, put } from '@/utils/fetch';
+import { THIS_PANEL, VIDEOS_LIST } from '@/app/constants';
+import Preview from '../preview';
 
 interface PanelSettingsProps {
     panel: Panel
@@ -18,6 +19,21 @@ export default function PanelSettings(props: PanelSettingsProps) {
     const [title, setTitle] = useState(props.panel.title);
     const [filterType, setFilterType] = useState<PanelFilterType>(content.type);
     const [filter, setFilter] = useState(content.filter);
+    const [videos, setVideos] = useState<VideoData[]>([]);
+
+    useEffect(()=> {
+        const getVideos = async () => {
+            const response = await post(VIDEOS_LIST).withJsonBody({
+                type: filterType,
+                filter: filter
+            }).send();
+            if (response.ok) {
+                const newVideos = await response.json() as unknown as VideoData[];
+                setVideos(newVideos)
+            }  
+        }
+        getVideos();
+    }, [filter]);
 
     const handleFilterSelected = (e: ChangeEvent<HTMLInputElement>) => {
         setFilterType(parseInt(e.target.value) as PanelFilterType);
@@ -60,6 +76,13 @@ export default function PanelSettings(props: PanelSettingsProps) {
                 </label>
             </div>
             <FilterSelector type={filterType} init={filter} onChange={handleFilterChanged}/>
+            <div className='flex flex-nowrap space-x-1 md:space-x-2 overflow-x-auto'>
+                    { 
+                        videos.map((x)=> (
+                        <Preview key={x.id} previewData={x}/>
+                        ))
+                    }
+            </div>
             <ViButton onClick={handleSaveClick} color={ViButtonColor.Blue}>
                 <h1 className='p-2'>Save</h1>              
             </ViButton>

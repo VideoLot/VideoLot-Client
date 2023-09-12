@@ -21,7 +21,7 @@ export default function Preview(props: VideoPreviewProps) {
                     <div className='flex flex-0 flow-horizontal font-extralight text-xs md:text-sm'>
                         <p className='block'>{props.previewData.views.toString()} views</p>
                         <p> • </p>
-                        <p>{props.previewData.uploadedDate.toLocaleDateString()}</p>
+                        <p>{new Date(props.previewData.uploadedDate).toLocaleDateString()}</p>
                     </div>
                 </div>
             </Link>
