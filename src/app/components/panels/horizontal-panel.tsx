@@ -8,14 +8,20 @@ export default async function HorizontalVideoPanel(props: Panel) {
     const videos = await GetVideosForPanel();
     
     const panelSettings = () => {
-        return <div className='p-2'>
+        return <div className='p-2 pt-0'>
             <PanelSettings panel={props}></PanelSettings>
         </div>
          
     }
 
+    const panelHeader = () => {
+        return <div className='flex px-2 items-center'>
+            <h1>Panel settings</h1>
+        </div>
+    }
+
     return (
-        <SettingsWrapper settings={panelSettings()}>
+        <SettingsWrapper popupTitle={panelHeader()} settings={panelSettings()}>
             <div>
                 <div>
                     <h2>{props.title}</h2>
@@ -27,7 +33,6 @@ export default async function HorizontalVideoPanel(props: Panel) {
                         ))
                     }
                 </div>
-                {/* <PanelSettings panel={props}></PanelSettings> */}
             </div>
         </SettingsWrapper> 
     );

@@ -8,6 +8,7 @@ import { UserRole } from '@videolot/videolot-prisma';
 interface SettingsWrapperProps {
     children: ReactNode
     settings: ReactNode
+    popupTitle?: ReactNode
 }
 
 export default function SettingsWrapper(props: SettingsWrapperProps) {
@@ -25,7 +26,7 @@ export default function SettingsWrapper(props: SettingsWrapperProps) {
             <ClientGuard minimalRole={UserRole.Admin} allowed={editButton()} restricted={<></>}/>
             
             {props.children}
-            <ViPopup isOpen={settingsOpened} onClose={()=>{setSettingsOpened(false)}}>
+            <ViPopup title={props.popupTitle} isOpen={settingsOpened} onClose={()=>{setSettingsOpened(false)}}>
                 {props.settings}
             </ViPopup>
         </div>

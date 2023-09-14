@@ -1,7 +1,7 @@
 import { prisma } from '@/utils/db'
 import { PanelType } from '@videolot/videolot-prisma'
-import { PanelContentData } from '../types';
-import HorizontalVideoPanel from './panels/horizontal-panel';
+import { PanelContentData } from '../../types';
+import HorizontalVideoPanel from './horizontal-panel';
 
 interface RootPanelProps {
     path: string

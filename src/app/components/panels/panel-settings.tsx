@@ -1,7 +1,7 @@
 'use client'
 
 import { PanelContentData, PanelFilterType, PanelRequestVariant } from "@/app/types";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import { CategoryFilter } from './category-filter';
 import { Panel, VideoData } from '@videolot/videolot-prisma';
 import ViButton, { ViButtonColor } from '../vi-button';
@@ -16,7 +16,7 @@ interface PanelSettingsProps {
 export default function PanelSettings(props: PanelSettingsProps) {
     const content = props.panel.content as unknown as PanelContentData;
 
-    const [title, setTitle] = useState(props.panel.title);
+    const [title, setTitle] = useState(props.panel.title || '');
     const [filterType, setFilterType] = useState<PanelFilterType>(content.type);
     const [filter, setFilter] = useState(content.filter);
     const [videos, setVideos] = useState<VideoData[]>([]);
@@ -35,8 +35,12 @@ export default function PanelSettings(props: PanelSettingsProps) {
         getVideos();
     }, [filter]);
 
+    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+    }
+
     const handleFilterTypeSelected = (type: PanelFilterType) => {
-        setFilterType(parseInt(e.target.value) as PanelFilterType);
+        setFilterType(type);
     }
 
     const handleFilterChanged = (filter: PanelRequestVariant[] | string[]) => {
@@ -56,7 +60,7 @@ export default function PanelSettings(props: PanelSettingsProps) {
         if (tmp.ok) {
             const newData = await tmp.json() as Panel;
             const content = newData.content as unknown as PanelContentData;
-            setTitle(newData.title);
+            setTitle(newData.title || '');
             setFilterType(content.type);
             setFilter(content.filter);
         }
@@ -65,6 +69,7 @@ export default function PanelSettings(props: PanelSettingsProps) {
 
     return (
         <div className='space-y-2'>
+            <input type='text' value={title} onChange={handleTitleChange}></input>
             <div className='space-x-2'>
                 <label>
                     <input type='radio' name='filterType' checked={filterType === PanelFilterType.Categories} onChange={(e)=>handleFilterTypeSelected(PanelFilterType.Categories)}></input>
@@ -77,11 +82,11 @@ export default function PanelSettings(props: PanelSettingsProps) {
             </div>
             <FilterSelector type={filterType} init={filter} onChange={handleFilterChanged}/>
             <div className='flex flex-nowrap space-x-1 md:space-x-2 overflow-x-auto'>
-                    { 
-                        videos.map((x)=> (
+                { 
+                    videos.map((x)=> (
                         <Preview key={x.id} previewData={x}/>
-                        ))
-                    }
+                    ))
+                }
             </div>
             <ViButton onClick={handleSaveClick} color={ViButtonColor.Blue}>
                 <h1 className='p-2'>Save</h1>              
