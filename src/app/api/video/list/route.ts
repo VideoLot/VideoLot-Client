@@ -3,6 +3,21 @@ import { prisma } from '@/utils/db';
 import { updateHeaders } from '@/utils/http';
 import { NextRequest, NextResponse } from 'next/server';
 
+export async function GET(req: NextRequest) {
+    const request = req.nextUrl.searchParams.get('search') || '';
+    const headers = updateHeaders(req.headers);
+
+    const result = await prisma.videoData.findMany({
+        where: {
+            title: {
+                contains: request,
+                mode: 'insensitive'
+            }
+        }
+    });
+    return NextResponse.json(result, {headers});
+}
+
 export async function POST(req: NextRequest) {
     const headers = updateHeaders(req.headers);
     const content = await req.json() as unknown as PanelContentData;

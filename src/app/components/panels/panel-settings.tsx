@@ -8,6 +8,7 @@ import ViButton, { ViButtonColor } from '../vi-button';
 import { post, put } from '@/utils/fetch';
 import { THIS_PANEL, VIDEOS_LIST } from '@/app/constants';
 import Preview from '../preview';
+import ListFilter from './list-filter';
 
 interface PanelSettingsProps {
     panel: Panel
@@ -101,7 +102,7 @@ export function FilterSelector({type, init, onChange}: {type: PanelFilterType | 
             const handleCategoryChanged = (filter: PanelRequestVariant[])=> {onChange(filter)}
             return <CategoryFilter filter={init as PanelRequestVariant[]} onChange={handleCategoryChanged}/>;
         case PanelFilterType.List:
-            return <List/>;
+            return <ListFilter/>;
         default:
             return <h1>Select a way how content will appear in this panel</h1>
     }
