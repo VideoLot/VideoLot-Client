@@ -35,7 +35,7 @@ export default function PanelSettings(props: PanelSettingsProps) {
         getVideos();
     }, [filter]);
 
-    const handleFilterSelected = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFilterTypeSelected = (type: PanelFilterType) => {
         setFilterType(parseInt(e.target.value) as PanelFilterType);
     }
 
@@ -67,11 +67,11 @@ export default function PanelSettings(props: PanelSettingsProps) {
         <div className='space-y-2'>
             <div className='space-x-2'>
                 <label>
-                    <input type='radio' name='filterType'  value={PanelFilterType.Categories} onChange={handleFilterSelected}></input>
+                    <input type='radio' name='filterType' checked={filterType === PanelFilterType.Categories} onChange={(e)=>handleFilterTypeSelected(PanelFilterType.Categories)}></input>
                     Category filter
                 </label>
                 <label>
-                    <input type='radio' name='filterType' value={PanelFilterType.List} onChange={handleFilterSelected}></input>
+                    <input type='radio' name='filterType' checked={filterType === PanelFilterType.List} onChange={(e)=>handleFilterTypeSelected(PanelFilterType.List)}></input>
                     Predefined list
                 </label>
             </div>
