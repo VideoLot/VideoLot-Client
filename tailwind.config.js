@@ -29,7 +29,8 @@ module.exports = {
         '25vw': "25vw",
       },
       width: {
-        '85vw': "85vw"
+        '85vw': "85vw",
+        '85vh': "85vh"
       },
       flex: {
         '0': '0 0 auto'

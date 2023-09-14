@@ -46,13 +46,24 @@ export function CategoryFilter(props: CategoryFilterProps) {
         props.onChange(updated);
     }
 
+    const handleVariantDelete = (index: number) => {
+        const updated = [...props.filter];
+        updated.splice(index, 1);;
+        props.onChange(updated);
+    }
+
     return <>
-        <h1>Category filter</h1>
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col md:max-w-85vw md:w-85vw md gap-2'>
             {
-                props.filter.map((x, i) => <>
+                props.filter.map((x, i) => <div className='flex flex-row space-x-2'>
                     <Variant key={Math.random()} options={options} data={x} index={i} onChange={handleVariantChange}/>
-                </>)
+                    <ViButton color={ViButtonColor.SemiRed} onClick={() => handleVariantDelete(i)}>
+                        <div className='flex flex-row items-center h-10 p-1'>
+                            <Image width={30} height={30} src='/closure-texture.svg' alt='delete sign'></Image>
+                            Delete variant
+                        </div>
+                    </ViButton>
+                </div>)
             }
             
             <div>
@@ -102,11 +113,11 @@ function Variant({ data, options, index, onChange }: { data: PanelRequestVariant
             {i !== 0 ? <h1>and</h1> : null}
             <CategorySelector key={Math.random()} options={options} value={x} index={i} onChange={handleSelectorChange} />
         </>)}
+        <AddButton text='Add category' onClick={handleAddCategory}></AddButton>
         <label>
             <input type='checkbox' checked={data.isStrict} onChange={handleStrictChanged}></input>
             Is Strict
         </label>
-        <AddButton text='Add category' onClick={handleAddCategory}></AddButton>
     </div>;
 }
 

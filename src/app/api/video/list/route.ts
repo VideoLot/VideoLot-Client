@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     if (content.type === PanelFilterType.Categories) {
         const filter = content.filter as PanelRequestVariant[];
-        const request = [];
+        const variants = [];
         for (const variant of filter) {
             const inCategories  = [];
             const outCategories = [];
@@ -24,22 +24,40 @@ export async function POST(req: NextRequest) {
                     inCategories.push(category.id);
                 }
             }
-            request.push({
-                categories: {
-                    every: {
-                        AND: [
-                            {id: {in: inCategories}},
-                            {id: {notIn: outCategories}}
-                        ]
+
+            if(variant.isStrict) {
+                variants.push({
+                    categories: {
+                        every: {id: {in: inCategories}}
                     }
-                }
-            });
+                });
+            } else {
+                const requireEach = variant.categories.map(x => {
+                    return {
+                        categories: {
+                            some: {id: x.id}
+                        }
+                    };
+                });
+                variants.push({
+                    AND: [
+                        ...requireEach,
+                        {
+                            categories: {
+                                none: {
+                                    id: {in: outCategories}
+                                }
+                            }
+                        }
+                    ]
+                });
+            }
         }
         
         const result = await prisma.videoData.findMany({
             include: { categories: true },
             where: {
-                OR: request
+                OR: variants
             }
         });
         return NextResponse.json(result, {headers});
