@@ -27,6 +27,8 @@ module.exports = {
       },
       height: {
         '25vw': "25vw",
+        '90vh': "90vh",
+        '25vh': "25vh"
       },
       width: {
         '85vw': "85vw",
@@ -35,9 +37,13 @@ module.exports = {
       flex: {
         '0': '0 0 auto'
       },
-      minHeight:{
+      minHeight: {
         '30vh': '30vh'
-      }
+      },
+      maxHeight: {
+        '90vh': "90vh",
+        '25vh': "25vh"
+      } 
     },
   },
   plugins: [],

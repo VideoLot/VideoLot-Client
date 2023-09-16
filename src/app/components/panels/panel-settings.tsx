@@ -1,7 +1,7 @@
 'use client'
 
 import { PanelContentData, PanelFilterType, PanelRequestVariant } from "@/app/types";
-import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { CategoryFilter } from './category-filter';
 import { Panel, VideoData } from '@videolot/videolot-prisma';
 import ViButton, { ViButtonColor } from '../vi-button';
@@ -21,6 +21,7 @@ export default function PanelSettings(props: PanelSettingsProps) {
     const [filterType, setFilterType] = useState<PanelFilterType>(content.type);
     const [filter, setFilter] = useState(content.filter);
     const [videos, setVideos] = useState<VideoData[]>([]);
+    const filtersStorage = useRef(new Map([[content.type, content.filter]]));
 
     useEffect(()=> {
         const getVideos = async () => {
@@ -41,7 +42,15 @@ export default function PanelSettings(props: PanelSettingsProps) {
     }
 
     const handleFilterTypeSelected = (type: PanelFilterType) => {
+        const storage = filtersStorage.current;
+        storage.set(filterType, filter);
+
         setFilterType(type);
+        if(storage.has(type)) {
+            setFilter(storage.get(type) as string[] | PanelRequestVariant[]);
+        } else {
+            setFilter([]);
+        }
     }
 
     const handleFilterChanged = (filter: PanelRequestVariant[] | string[]) => {
@@ -99,10 +108,11 @@ export default function PanelSettings(props: PanelSettingsProps) {
 export function FilterSelector({type, init, onChange}: {type: PanelFilterType | undefined, init: PanelRequestVariant[] | string[], onChange: (filter: PanelRequestVariant[] | string [])=>void}) {
     switch (type) {
         case PanelFilterType.Categories:
-            const handleCategoryChanged = (filter: PanelRequestVariant[])=> {onChange(filter)}
+            const handleCategoryChanged = (filter: PanelRequestVariant[]) => {onChange(filter)}
             return <CategoryFilter filter={init as PanelRequestVariant[]} onChange={handleCategoryChanged}/>;
         case PanelFilterType.List:
-            return <ListFilter/>;
+            const handleListChanged = (filter: string[]) => {onChange(filter)}
+            return <ListFilter filter={init as string[]} onChange={handleListChanged}/>;
         default:
             return <h1>Select a way how content will appear in this panel</h1>
     }

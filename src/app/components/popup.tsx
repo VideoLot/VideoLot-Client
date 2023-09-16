@@ -16,7 +16,7 @@ export default function ViPopup(props: PopupProps) {
             {
                 //@ts-ignore
                 close => (
-                    <div className='flex flex-col bg-popup max-w-85vw rounded-md'>
+                    <div className='flex flex-col bg-popup max-w-85vw max-h-90vh rounded-md'>
                         <div className='flex flex-row'>
                             {props.title}
                             <button onClick={()=>close()} className='block ml-auto bg-closure-texture bg-cover bg-center w-8 h-8'></button>

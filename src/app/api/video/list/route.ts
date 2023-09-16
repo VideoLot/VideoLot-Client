@@ -77,5 +77,13 @@ export async function POST(req: NextRequest) {
         });
         return NextResponse.json(result, {headers});
     }
+
+    if (content.type === PanelFilterType.List) {
+        const list = content.filter as string[];
+        const result = await prisma.videoData.findMany({
+            where: {id: {in: list}}
+        });
+        return NextResponse.json(result, {headers});
+    }
     return NextResponse.json([], {headers});
 }
