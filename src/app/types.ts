@@ -79,3 +79,8 @@ export interface NameValue {
     name: string
     value: string
 }
+
+export interface PageOfVideos {
+    totalVideos: number
+    videos: VideoData[]
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { PanelContentData, PanelFilterType, PanelRequestVariant } from "@/app/types";
+import { PageOfVideos, PanelContentData, PanelFilterType, PanelRequestVariant } from "@/app/types";
 import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { CategoryFilter } from './category-filter';
 import { Panel, VideoData } from '@videolot/videolot-prisma';
@@ -28,10 +28,14 @@ export default function PanelSettings(props: PanelSettingsProps) {
             const response = await post(VIDEOS_LIST).withJsonBody({
                 type: filterType,
                 filter: filter
-            }).send();
+            }).withParams(
+                {name: 'pageSize', value: '10'},
+                {name: 'page', value: '0'}
+            )
+            .send();
             if (response.ok) {
-                const newVideos = await response.json() as unknown as VideoData[];
-                setVideos(newVideos)
+                const newVideos = await response.json() as unknown as PageOfVideos;
+                setVideos(newVideos.videos);
             }  
         }
         getVideos();
@@ -116,8 +120,4 @@ export function FilterSelector({type, init, onChange}: {type: PanelFilterType | 
         default:
             return <h1>Select a way how content will appear in this panel</h1>
     }
-}
-
-export function List() {
-    return <h1>LIST FILTER</h1>
 }

@@ -1,5 +1,5 @@
 
-import HorizontalVideoPanel from '@/app/components/panels/horizontal-panel'
+import ServerPanel from '@/app/components/panels/server-panel'
 import RootPanel from './components/panels/root-panel'
 
 export default function Home() {

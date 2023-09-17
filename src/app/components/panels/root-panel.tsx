@@ -1,7 +1,7 @@
 import { prisma } from '@/utils/db'
 import { PanelType } from '@videolot/videolot-prisma'
 import { PanelContentData } from '../../types';
-import HorizontalVideoPanel from './horizontal-panel';
+import ServerPanel from './server-panel';
 
 interface RootPanelProps {
     path: string
@@ -26,14 +26,14 @@ export default async function RootPanel( props: RootPanelProps) {
     });
     return <>
         {
-            panels.map(x=> (<HorizontalVideoPanel id={x.id}
+            panels.map(x=> (<ServerPanel id={x.id}
                 type={x.type}
                 path={x.path} 
                 content={x.content} 
                 title={x.title} 
                 version={x.version} 
                 createdAt={x.createdAt} 
-                updatedAt={x.updatedAt}></HorizontalVideoPanel>))
+                updatedAt={x.updatedAt}></ServerPanel>))
         }
     </>
 }
