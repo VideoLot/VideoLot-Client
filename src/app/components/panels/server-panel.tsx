@@ -4,7 +4,7 @@ import ClientPanel from './client-panel';
 import { PanelContentData } from '@/app/types';
 
 export default async function ServerPanel(props: Panel) {
-    const pageSize = 7;
+    const pageSize = 10;
     const currentPage = 0;
 
     const content = props.content as unknown as PanelContentData;
@@ -12,7 +12,7 @@ export default async function ServerPanel(props: Panel) {
     const totalPages = Math.ceil(page.totalVideos / pageSize);
 
     return (
-        <ClientPanel currentPage={currentPage} panel={props} totalPages={totalPages} pageSize={pageSize} pageContent={page.videos}></ClientPanel>
+        <ClientPanel page={currentPage} panel={props} totalPages={totalPages} pageSize={pageSize} pageContent={page.videos}></ClientPanel>
     );
 } 
 

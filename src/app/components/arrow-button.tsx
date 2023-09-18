@@ -26,5 +26,5 @@ export default function ArrowButton(props: ArrowButtonProps) {
             transform = 'transform rotate-90'
     }
 
-    return <button className={`bg-right-arrow-texture bg-center bg-cover w-full h-full ${transform}`}></button>
+    return <button className={`bg-right-arrow-texture bg-center bg-cover w-full h-full ${transform}`} onClick={props.onClick}></button>
 }
