@@ -5,6 +5,8 @@ import { PlayerContextData, PlayerContext, PlayerState } from "./player-context"
 import ControlsLayout from "./components/control-layout";
 import { PlayerData } from "@/app/types";
 import { BufferPull } from "./buffer-pull";
+import { SourceLoader } from './source-loader';
+import { isInRange } from './utils';
 
 export default function Player(props: PlayerData) {
     const bufferPullRef = useRef<BufferPull>();
@@ -12,12 +14,13 @@ export default function Player(props: PlayerData) {
     const [playerContext, setPlayerContext] = useState({
         state: getCurrentState(),
         isFullScreen: false,
-        duration: props.videoTrack.trackInfo.duration,
+        duration: props.videoTrack.trackInfo.duration / 1000,
         currentTime: 0,
         setState: setPlayerState,
         setFullscreen: setFullscreen,
         setCurrentTime: setCurrentTime
     } as PlayerContextData);
+    const [loaders, setLoaders] = useState<SourceLoader[]>([]);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -27,7 +30,7 @@ export default function Player(props: PlayerData) {
 
         if (!bufferPullRef.current) {
             const mediaSource = new MediaSource();
-            bufferPullRef.current = new BufferPull(mediaSource);
+            bufferPullRef.current = new BufferPull(mediaSource, readyForPlaybackHandler);
 
             mediaSource.addEventListener('sourceopen', videoSourceOpen);
             const mediaURL = URL.createObjectURL(mediaSource);
@@ -35,13 +38,24 @@ export default function Player(props: PlayerData) {
         }
     });
 
+    function readyForPlaybackHandler(pos: number) {
+        const video = videoRef.current;
+        if (!video) {
+            return;
+        }
+
+        video.currentTime = pos;
+    }
+
     async function videoSourceOpen(event: Event) {
         const pull = bufferPullRef.current;
         if (pull) {
-            pull.createSourceWithLoader(props.videoTrack.trackInfo);
+            const newLoaders = [];
+            newLoaders.push(pull.createSourceWithLoader(props.videoTrack.trackInfo));
             if (props.audioTracks.length > 0) {
-                pull.createSourceWithLoader(props.audioTracks[0].trackInfo);
+                newLoaders.push(pull.createSourceWithLoader(props.audioTracks[0].trackInfo));
             }
+            setLoaders(newLoaders);
             await pull.setPlaybackPosition(0);
         } 
     }
@@ -62,19 +76,6 @@ export default function Player(props: PlayerData) {
 
     function setFullscreen(isFullScreen: boolean) {
 
-    }
-
-    async function setCurrentTime(newTime: number) {
-        const video = videoRef.current;
-        const loader = bufferPullRef.current;
-        if (!video || !loader) {
-            return;
-        }
-
-        video.currentTime = newTime / 1000;
-        await loader.setPlaybackPosition(newTime);
-        const state = getCurrentState();
-        updateContext({state, currentTime: newTime});
     }
 
     function updateContext(context: any) {
@@ -105,12 +106,26 @@ export default function Player(props: PlayerData) {
         return PlayerState.Loading;
     }
 
-    async function playerTimeChanged() {
+    async function setCurrentTime(newTime: number) {
+        const video = videoRef.current;
+        const loader = bufferPullRef.current;
+        if (!video || !loader) {
+            return;
+        }
+
+        if (isInRange(newTime, video.seekable)) { //then ready to seek set time immediately
+            video.currentTime = newTime;
+        } else {
+            await loader.setPlaybackPosition(newTime); // then is not ready load the data and wait until ready for playback
+        }
+    }
+
+    async function handleTimeUpdated() {
         if (!videoRef.current || !bufferPullRef.current) {
             return;
         }
 
-        const currentTime = videoRef.current.currentTime * 1000;
+        const currentTime = videoRef.current.currentTime;
         const bufferLoaders = bufferPullRef.current;
         if (bufferLoaders) {
             await bufferLoaders.setPlaybackPosition(currentTime);
@@ -118,12 +133,12 @@ export default function Player(props: PlayerData) {
         updateContext({currentTime});
     }
 
-    return (
+    return <>
         <div className='relative w-full md:w-3/4'>
             <video ref={videoRef} 
                 onPlay={() => updateContext({state: PlayerState.Playing})}
                 onPause={() => updateContext({state: PlayerState.Paused})}
-                onTimeUpdate={playerTimeChanged}
+                onTimeUpdate={handleTimeUpdated}
                 poster='/PreviewPlaceholder.png'
                 className='w-full aspect-video'
                 >
@@ -131,8 +146,32 @@ export default function Player(props: PlayerData) {
             <PlayerContext.Provider value={playerContext}>
                 <ControlsLayout/>
             </PlayerContext.Provider>
-
         </div>
-        
+        <div>
+        {
+            loaders.map(x=><LoaderState key={x.description()} loader={x}></LoaderState>)
+        }
+        </div>
+    </>
+}
+
+function LoaderState({loader} : {loader: SourceLoader}) {
+    const [bufferedRanges, setBufferedRanges] = useState(loader.getLoadedRanges());
+    
+    useEffect(()=>{
+        loader.addUpdateListener(()=>{
+            setBufferedRanges(loader.getLoadedRanges());
+        });
+    }, []);
+
+    return (
+        <div className='flex flex-row w-85vw'>
+            <div>{`${loader.description()}`}</div>
+            <div className='flex flex-row ml-auto space-x-1'>
+                {
+                    bufferedRanges.map((x, i)=> <div key={`${i}_${loader.description()}`} className='bg-green-200 p-1 rounded-md'>{`${x.start}-${x.end}`}</div>)
+                }
+            </div>
+        </div>
     )
 }

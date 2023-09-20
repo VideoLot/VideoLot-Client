@@ -22,8 +22,8 @@ export default function RootLayout({
         <body className={inter.className}>
             <header >
               <AuthControls></AuthControls>
-              <div className='relative h-52'>
-                <Image src={'/hat.png'} objectFit={'contain'} fill alt='videolee. your own video hosting'></Image>
+              <div className='relative md:h-52'>
+                <Image src={'/hat.png'} fill className='object-contain' alt='videolee. your own video hosting'></Image>
               </div> 
             </header>
             {children}
