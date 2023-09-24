@@ -5,7 +5,7 @@ import { PlayerContextData, PlayerContext, PlayerState } from "./player-context"
 import ControlsLayout from "./components/control-layout";
 import { PlayerData } from "@/app/types";
 import { BufferPull } from "./buffer-pull";
-import { SourceLoader } from './source-loader';
+import { Queue, SourceLoader } from './source-loader';
 import { isInRange } from './utils';
 
 export default function Player(props: PlayerData) {
@@ -149,29 +149,49 @@ export default function Player(props: PlayerData) {
         </div>
         <div>
         {
-            loaders.map(x=><LoaderState key={x.description()} loader={x}></LoaderState>)
+            loaders.map(x=><LoaderState key={x.description} loader={x}></LoaderState>)
         }
         </div>
     </>
 }
 
 function LoaderState({loader} : {loader: SourceLoader}) {
-    const [bufferedRanges, setBufferedRanges] = useState(loader.getLoadedRanges());
+    const [bufferedRanges, setBufferedRanges] = useState(loader.getBufferedRanges());
     
     useEffect(()=>{
         loader.addUpdateListener(()=>{
-            setBufferedRanges(loader.getLoadedRanges());
+            setBufferedRanges(loader.getBufferedRanges());
         });
     }, []);
 
     return (
         <div className='flex flex-row w-85vw'>
-            <div>{`${loader.description()}`}</div>
+            <div>{`${loader.description}`}</div>
+            <div className='flex flex-col'>
+                <QueueState q={loader.downloadQueue}></QueueState>
+                <QueueState q={loader.bufferQueue}></QueueState>
+            </div>
             <div className='flex flex-row ml-auto space-x-1'>
                 {
-                    bufferedRanges.map((x, i)=> <div key={`${i}_${loader.description()}`} className='bg-green-200 p-1 rounded-md'>{`${x.start}-${x.end}`}</div>)
+                    bufferedRanges.map((x, i)=> <div key={`${i}_${loader.description}`} className='bg-green-200 p-1 rounded-md'>{`${x.start}-${x.end}`}</div>)
                 }
             </div>
         </div>
     )
+}
+
+function QueueState<T>({q}: {q: Queue<T>}) {
+    const [queueElements, setQueueElements] = useState<string[]>([]);
+
+    useEffect(() => {
+        q.addListener((data: T[])=>{
+            setQueueElements(data.map(x=>`${x}`));
+        });
+        setQueueElements(q.records.map(x=>`${x}`));
+    }, []);
+    return(
+        <div className='flex flex-row bg-green-200 p-1 rounded-md'>
+            {queueElements.join(' ')}
+        </div>
+    );
 }
