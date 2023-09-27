@@ -36,8 +36,10 @@ export class SourceLoader {
         return !!range;
     }
 
+    private counter = 0; //TODO delete me
     public async setPlaybackPosition(pos: number) {
         console.log('playback', this.description, pos, Date.now());
+        this.counter++;
         let bufferedTime = 0;   
 
         const range = isInRange(pos, this._buffer.buffered);
@@ -51,13 +53,18 @@ export class SourceLoader {
             const segmentEnd = Math.min(this._trackInfo.duration / 1000, pos + BUFFER_LENGTH);
             const desiredSegments = this.convertRangesToSegments([{start: pos, end: segmentEnd}]);
             const bufferingSegments = this._bufferingQueue.records.map(x=> x.num);
-            const bufferedSegments = this.convertRangesToSegments(this.getBufferedRanges());
+            const bufferedRanges = this.getBufferedRanges();
+            const bufferedSegments = this.convertRangesToSegments(bufferedRanges);
 
             const readySegments = [...bufferedSegments, ...bufferingSegments];
             if (this._downloadedSegment !== null) {
                 readySegments.push(this._downloadedSegment);
             }
             const normalizedSegments = this.removeIntersection(desiredSegments, readySegments);
+
+            if (this.counter === 3) { // TODO Delete ME!
+                console.log('DEBUG ONLY!');
+            }
             
             if (this._downloadQueue.length === 0) {
                 this._downloadQueue.records = normalizedSegments;
@@ -138,7 +145,7 @@ export class SourceLoader {
         const result: number[] = [];
         for(const range of ranges) {
             const from = Math.floor(range.start / SEGMENT_DURATION);
-            const to = Math.floor(range.end / SEGMENT_DURATION) - 1;
+            const to = Math.round(range.end / SEGMENT_DURATION) - 1;
             for (let i = from; i <= to; i++) {
                 result.push(i);
             }

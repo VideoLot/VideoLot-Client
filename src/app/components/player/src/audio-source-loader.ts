@@ -7,7 +7,9 @@ export class AudioSourceLoader extends SourceLoader {
         super(trackInfo, buffer);
     }
 
+    private counterAudio = 0; // TODO Delete Me
     public async setPlaybackPosition(pos: number): Promise<void> {
+        this.counterAudio++;
         const inRange = isInRange(pos, this._buffer.buffered);
         if (!inRange && this._buffer.buffered.length > 0) {
             this._downloadQueue.records = [];
