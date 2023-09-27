@@ -1,5 +1,6 @@
 import { TrackInfo } from '@videolot/videolot-prisma';
 import { SourceLoader } from './source-loader';
+import { AudioSourceLoader } from './audio-source-loader';
 
 export type ReadyForPlaybackHandler = (pos: number)=>void;
 
@@ -24,6 +25,14 @@ export class BufferPull {
         this._pull.push(loader);
         return loader;
     }
+
+    createAudioSourceWithLoader(trackInfo: TrackInfo): SourceLoader {
+        const sourceBuffer = this._mediaSource.addSourceBuffer(trackInfo.codec);
+        const loader = new AudioSourceLoader(trackInfo, sourceBuffer);
+        loader.addUpdateListener(() => this.handleSourceUpdated(loader));
+        this._pull.push(loader);
+        return loader;
+    }   
 
     async setPlaybackPosition(pos: number) {
         this._currentPosition = pos;

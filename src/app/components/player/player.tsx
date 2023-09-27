@@ -4,9 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { PlayerContextData, PlayerContext, PlayerState } from "./player-context";
 import ControlsLayout from "./components/control-layout";
 import { PlayerData } from "@/app/types";
-import { BufferPull } from "./buffer-pull";
-import { Queue, SourceLoader } from './source-loader';
-import { isInRange } from './utils';
+import { BufferPull } from "./src/buffer-pull";
+import { SourceLoader } from './src/source-loader';
+import { Queue } from './src/queue';
+import { isInRange } from './src/utils';
 
 export default function Player(props: PlayerData) {
     const bufferPullRef = useRef<BufferPull>();
@@ -53,7 +54,7 @@ export default function Player(props: PlayerData) {
             const newLoaders = [];
             newLoaders.push(pull.createSourceWithLoader(props.videoTrack.trackInfo));
             if (props.audioTracks.length > 0) {
-                newLoaders.push(pull.createSourceWithLoader(props.audioTracks[0].trackInfo));
+                newLoaders.push(pull.createAudioSourceWithLoader(props.audioTracks[0].trackInfo));
             }
             setLoaders(newLoaders);
             await pull.setPlaybackPosition(0);
@@ -157,19 +158,26 @@ export default function Player(props: PlayerData) {
 
 function LoaderState({loader} : {loader: SourceLoader}) {
     const [bufferedRanges, setBufferedRanges] = useState(loader.getBufferedRanges());
+    const [segmentsInBuffer, setSegmentsInBuffer] = useState<number[]>(loader._segmentsInBuffer);
     
     useEffect(()=>{
-        loader.addUpdateListener(()=>{
+        loader.addUpdateListener(() => {
             setBufferedRanges(loader.getBufferedRanges());
+            setSegmentsInBuffer(loader._segmentsInBuffer);
         });
     }, []);
 
     return (
-        <div className='flex flex-row w-85vw'>
+        <div className='flex flex-row w-85vw items-center'>
             <div>{`${loader.description}`}</div>
             <div className='flex flex-col'>
                 <QueueState q={loader.downloadQueue}></QueueState>
                 <QueueState q={loader.bufferQueue}></QueueState>
+            </div>
+            <div>
+                {
+                    segmentsInBuffer.join(' ')
+                }
             </div>
             <div className='flex flex-row ml-auto space-x-1'>
                 {

@@ -60,6 +60,24 @@ export function BottomPanel() {
         setCurrentTime(newTime);   
     }
 
+    const formatTime = (time: number) => {
+        let hours = 0;
+        let minutes = 0;
+        let seconds = Math.floor(time);
+        
+        if (time > 60) {
+            minutes = Math.floor(time / 60);
+            seconds = Math.round(time % 60);
+        }
+        if (minutes > 60) {
+            hours = Math.floor(minutes / 60);
+            minutes = Math.round(minutes % 60);
+        }
+
+
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
     const timeline = timelineRef.current;
     if (timeline) {
         if (!timelineChanging) {
@@ -81,8 +99,9 @@ export function BottomPanel() {
                     step='any' 
                     defaultValue={0}/>
             </div>
-            <div className='h-full'>
+            <div className='flex flex-row h-full items-center'>
                 <button onClick={playButtonClick} className={`h-full w-16 bg-contain bg-center ${background}`}></button>
+                <div className='text-white font-thin'>{`${formatTime(currentTime)} | ${formatTime(duration)}`}</div>
             </div>
         </div>);
 }

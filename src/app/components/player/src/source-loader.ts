@@ -1,44 +1,25 @@
 import { get } from "@/utils/fetch";
 import { TrackInfo } from "@videolot/videolot-prisma";
 import { SEGMENTS } from '@/app/constants'
-import { TimeRange, isInRange } from './utils';
+import { TimeRange, isInRange, SegmentBuffer } from './utils';
+import { Queue } from './queue';
 
-
-const BUFFER_LENGTH = 15;
-const SEGMENT_DURATION = 2;
+export const BUFFER_LENGTH = 15;
+export const SEGMENT_DURATION = 2;
 
 export type UpdateHandler = ()=>void;
 export type QueueUpdateHandler = ([])=>void;
 
-class SegmentBuffer {
-    private _num: number;
-    private _data: ArrayBuffer;
-
-    constructor(num: number, data: ArrayBuffer) {
-        this._num = num;
-        this._data = data;
-    }
-
-    public get num() {
-        return this._num;
-    }
-
-    public get data() {
-        return this._data;
-    }
-
-    public toString() {
-        return this._num.toString();
-    }
-};
-
 export class SourceLoader {
-    private _trackInfo: TrackInfo;
-    private _buffer: SourceBuffer;
+    protected _trackInfo: TrackInfo;
+    protected _buffer: SourceBuffer;
 
-    private _downloadQueue = new Queue<number>();
-    private _bufferingQueue = new Queue<SegmentBuffer>();
-    private _updateListeners: UpdateHandler[] = [];
+    protected _downloadQueue = new Queue<number>();
+    protected _bufferingQueue = new Queue<SegmentBuffer>();
+    protected _updateListeners: UpdateHandler[] = [];
+
+    protected _downloadedSegment: number | null = null;
+    
 
     /**
      *
@@ -47,13 +28,7 @@ export class SourceLoader {
         this._trackInfo = trackInfo;
         this._buffer = buffer;
 
-        this._buffer.addEventListener("updateend", (event: Event) => {
-            this._updateListeners.forEach(x => x());
-            if (this._bufferingQueue.length > 0) {
-                const segment = this._bufferingQueue.dequeue() as SegmentBuffer;
-                this._buffer.appendBuffer(segment.data);
-            }
-        });
+        this._buffer.addEventListener("updateend", this.handleBufferUpdate.bind(this));
     }
 
     public isReadyForPlaybackAtPosition(pos: number): boolean {
@@ -62,6 +37,7 @@ export class SourceLoader {
     }
 
     public async setPlaybackPosition(pos: number) {
+        console.log('playback', this.description, pos, Date.now());
         let bufferedTime = 0;   
 
         const range = isInRange(pos, this._buffer.buffered);
@@ -77,7 +53,11 @@ export class SourceLoader {
             const bufferingSegments = this._bufferingQueue.records.map(x=> x.num);
             const bufferedSegments = this.convertRangesToSegments(this.getBufferedRanges());
 
-            const normalizedSegments = this.removeIntersection(desiredSegments, [...bufferedSegments, ...bufferingSegments]);
+            const readySegments = [...bufferedSegments, ...bufferingSegments];
+            if (this._downloadedSegment !== null) {
+                readySegments.push(this._downloadedSegment);
+            }
+            const normalizedSegments = this.removeIntersection(desiredSegments, readySegments);
             
             if (this._downloadQueue.length === 0) {
                 this._downloadQueue.records = normalizedSegments;
@@ -117,19 +97,34 @@ export class SourceLoader {
         this._updateListeners.push(listener);
     }
 
-    private async startUploadQueue() {
+    public _segmentsInBuffer :number[] = [];
+    protected handleBufferUpdate(event: Event) {
+        this._updateListeners.forEach(x => x());
+        if (this._bufferingQueue.length > 0) {
+            this.consumeBufferingQueue();
+        }
+    }
+
+    protected async startUploadQueue() {
         while(this._downloadQueue.length > 0) {
             const segmentNumber = this._downloadQueue.dequeue() as number;
+            this._downloadedSegment = segmentNumber;
             const res = await this.loadSegment(segmentNumber);
             if (res.ok) {
                 const data = await res.arrayBuffer();
-                if (this._buffer.updating) {
-                    this._bufferingQueue.enqueue(new SegmentBuffer(segmentNumber, data));
-                } else {
-                    this._buffer.appendBuffer(data);
+                this._bufferingQueue.enqueue(new SegmentBuffer(segmentNumber, data));
+                if (!this._buffer.updating) {
+                    this.consumeBufferingQueue();
                 }   
             }
+            this._downloadedSegment = null;
         }
+    }
+
+    protected consumeBufferingQueue() {
+        const segment = this._bufferingQueue.dequeue() as SegmentBuffer;
+        this._segmentsInBuffer.push(segment.num);
+        this._buffer.appendBuffer(segment.data);
     }
     
     private async loadSegment(segmentNumber: number) {
@@ -163,42 +158,4 @@ export class SourceLoader {
     }
 }
 
-export class Queue<T> {
-    private _records: T[] = [];
-    private _listeners: ((queue: T[])=>void)[] = [];
 
-    public enqueue(...records: T[]) {
-        this._records.push(...records);
-        this.fireQueueUpdate();
-    }
-
-    public dequeue(): T | undefined {
-        const element = this._records.shift();
-        this.fireQueueUpdate();
-        return element;
-    }
-
-    public get records() {
-        return this._records;
-    }
-
-    public set records(value: T[]) {
-        this._records = value;
-        this.fireQueueUpdate();
-    }
-
-    public get length(): number {
-        return this._records.length;
-    }
-
-    public addListener(listener: (queue: T[])=>void) {
-        this._listeners.push(listener);
-    }
-
-    private fireQueueUpdate() {
-        for(const listener of this._listeners) {
-            listener(this._records);
-        }
-    }
-
-}
