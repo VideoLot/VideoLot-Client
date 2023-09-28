@@ -36,10 +36,7 @@ export class SourceLoader {
         return !!range;
     }
 
-    private counter = 0; //TODO delete me
     public async setPlaybackPosition(pos: number) {
-        console.log('playback', this.description, pos, Date.now());
-        this.counter++;
         let bufferedTime = 0;   
 
         const range = isInRange(pos, this._buffer.buffered);
@@ -61,10 +58,6 @@ export class SourceLoader {
                 readySegments.push(this._downloadedSegment);
             }
             const normalizedSegments = this.removeIntersection(desiredSegments, readySegments);
-
-            if (this.counter === 3) { // TODO Delete ME!
-                console.log('DEBUG ONLY!');
-            }
             
             if (this._downloadQueue.length === 0) {
                 this._downloadQueue.records = normalizedSegments;

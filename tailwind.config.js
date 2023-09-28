@@ -21,7 +21,9 @@ module.exports = {
         'loader-texture': "url('/loader-texture.svg')",
         'settings-texture': "url('/settings-texture.svg')",
         'closure-texture': "url(/closure-texture.svg)",
-        'right-arrow-texture': "url(/right-arrow-texture.svg)"
+        'right-arrow-texture': "url(/right-arrow-texture.svg)",
+        'expand-texture': "url(/expand-texture.svg)",
+        'collapse-texture': "url(/collapse-texture.svg)"
       },
       backgroundColor: {
         'popup': 'rgb(var(--popup-bg))'

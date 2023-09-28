@@ -22,12 +22,22 @@ export default function Player(props: PlayerData) {
         setCurrentTime: setCurrentTime
     } as PlayerContextData);
     const [loaders, setLoaders] = useState<SourceLoader[]>([]);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const video = videoRef.current;
         if (!video) {
             return;
         }
+
+        const container = containerRef.current;
+        if (!container) {
+            return;
+        }
+
+        container.addEventListener('fullscreenchange', (e: Event) => {
+            updateContext({isFullScreen: !!document.fullscreenElement});
+        })
 
         if (!bufferPullRef.current) {
             const mediaSource = new MediaSource();
@@ -76,7 +86,23 @@ export default function Player(props: PlayerData) {
     }
 
     function setFullscreen(isFullScreen: boolean) {
+        const container = containerRef.current;
+        if (!container) {
+            return;
+        }
 
+        if (isFullScreen) {
+            container.requestFullscreen({navigationUI:'hide'})
+                .then(() => {
+                    
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            document.exitFullscreen();
+        }
+        
     }
 
     function updateContext(context: any) {
@@ -135,7 +161,7 @@ export default function Player(props: PlayerData) {
     }
 
     return <>
-        <div className='relative w-full md:w-3/4'>
+        <div ref={containerRef} className='relative w-full md:w-3/4'>
             <video ref={videoRef} 
                 onPlay={() => updateContext({state: PlayerState.Playing})}
                 onPause={() => updateContext({state: PlayerState.Paused})}

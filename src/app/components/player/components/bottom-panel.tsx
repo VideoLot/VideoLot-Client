@@ -5,26 +5,28 @@ import { PlayerContext, PlayerState } from "../player-context";
 
 export function BottomPanel() {
     const timelineRef = useRef<HTMLInputElement>(null);
-    const { state, duration, currentTime, setState, setCurrentTime } = useContext(PlayerContext);
+    const { state, duration, currentTime, isFullScreen, setState, setCurrentTime, setFullscreen } = useContext(PlayerContext);
     const [timelineChanging, setTimelineChanging] = useState(false);
     
-    let background;
+    let playbackBg;
     switch (state) {
         case PlayerState.Playing:
-            background = 'bg-simple-pause-button-texture';
+            playbackBg = 'bg-simple-pause-button-texture';
             break;
         case PlayerState.Paused:
-            background = 'bg-simple-play-button-texture';
+            playbackBg = 'bg-simple-play-button-texture';
             break;
         case PlayerState.Loading:
-            background = 'bg-loader-texture';
+            playbackBg = 'bg-loader-texture';
             break;
         case PlayerState.Finished:
-            background = 'bg-loader-texture';
+            playbackBg = 'bg-loader-texture';
             break;
     }
 
-    function playButtonClick() {
+    const fullscreenBg = isFullScreen ? 'bg-collapse-texture': 'bg-expand-texture';
+
+    function handlePlayButtonClick() {
         if (!setState) {
             return;
         }
@@ -58,6 +60,14 @@ export function BottomPanel() {
         console.log('Time Change Approved: ', newTime);
         setTimelineChanging(false)
         setCurrentTime(newTime);   
+    }
+
+    function handleFullscreenClick() {
+        if(!setFullscreen) {
+            return;
+        }
+
+        setFullscreen(!isFullScreen);
     }
 
     const formatTime = (time: number) => {
@@ -99,9 +109,14 @@ export function BottomPanel() {
                     step='any' 
                     defaultValue={0}/>
             </div>
-            <div className='flex flex-row h-full items-center'>
-                <button onClick={playButtonClick} className={`h-full w-16 bg-contain bg-center ${background}`}></button>
-                <div className='text-white font-thin'>{`${formatTime(currentTime)} | ${formatTime(duration)}`}</div>
+            <div className='flex flex-row h-full'>
+                <div className='flex flex-row w-full h-full items-center'>
+                    <button onClick={handlePlayButtonClick} className={`h-full w-16 bg-contain bg-center ${playbackBg}`}></button>
+                    <div className='text-white font-thin'>{`${formatTime(currentTime)} | ${formatTime(duration)}`}</div>
+                </div>
+                <div className='flex flex-row w-full h-full justify-end items-center'>
+                    <button onClick={handleFullscreenClick} className={`h-full w-16 bg-contain bg-center ${fullscreenBg}`}></button>
+                </div>
             </div>
         </div>);
 }
