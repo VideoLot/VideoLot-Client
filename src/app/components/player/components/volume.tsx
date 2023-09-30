@@ -4,14 +4,19 @@ import { ChangeEvent, useState } from 'react';
 
 interface VolumeProps {
     value: number,
-    onValueChange: (val: number)=>void;
+    onValueChange: (val: number) => void;
+    isMuted: boolean,
+    onMutedChange: (val: boolean) => void;
 }
 
 export function Volume(props: VolumeProps) {
-    const [isMuted, setIsMuted] = useState<boolean>(false);
+    const [isMuted, setIsMuted] = useState<boolean>(props.isMuted);
 
     const handleMuteClick = () => {
-        setIsMuted(!isMuted);
+        const newVal = !isMuted;
+        setIsMuted(newVal);
+
+        props.onMutedChange(newVal);
     }
 
     const handleValueChange = (e: ChangeEvent) => {

@@ -18,10 +18,12 @@ export default function Player(props: PlayerData) {
         duration: props.videoTrack.trackInfo.duration / 1000,
         currentTime: 0,
         volume: 0.5,
+        muted: false,
         setState: setPlayerState,
         setFullscreen: setFullscreen,
         setCurrentTime: setCurrentTime,
         setVolume: setVolume,
+        setMuted: setMuted
     } as PlayerContextData);
     const [loaders, setLoaders] = useState<SourceLoader[]>([]);
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -114,6 +116,19 @@ export default function Player(props: PlayerData) {
         }
 
         video.volume = val;
+    }
+
+    function setMuted(val: boolean) {
+        const video = videoRef.current;
+        if (!video) {
+            return;
+        }
+
+        if (val !== video.muted) {
+            video.muted = val;
+            
+        }
+        updateContext({muted: video.muted});
     }
 
     function updateContext(context: any) {

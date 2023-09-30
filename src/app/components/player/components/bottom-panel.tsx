@@ -11,11 +11,13 @@ export function BottomPanel() {
         duration, 
         currentTime, 
         isFullScreen, 
-        volume, 
+        volume,
+        muted,
         setState, 
         setCurrentTime, 
         setFullscreen, 
-        setVolume 
+        setVolume,
+        setMuted,
     } = useContext(PlayerContext);
     const [timelineChanging, setTimelineChanging] = useState(false);
     
@@ -87,6 +89,12 @@ export function BottomPanel() {
         }
     }
 
+    function handleMutedChange(val: boolean) {
+        if (setMuted) {
+            setMuted(val);
+        }
+    }
+
     const formatTime = (time: number) => {
         let hours = 0;
         let minutes = 0;
@@ -129,7 +137,7 @@ export function BottomPanel() {
             <div className='flex flex-row h-full'>
                 <div className='flex flex-row w-full h-full items-center'>
                     <button onClick={handlePlayButtonClick} className={`h-full w-16 bg-contain bg-center ${playbackBg}`}></button>
-                    <Volume onValueChange={handleVolumeChange} value={volume}></Volume>
+                    <Volume onValueChange={handleVolumeChange} onMutedChange={handleMutedChange} value={volume} isMuted={muted}></Volume>
                     <div className='text-white font-thin contents'>{`${formatTime(currentTime)} | ${formatTime(duration)}`}</div>
                 </div>
                 <div className='flex flex-row w-full h-full justify-end items-center'>
