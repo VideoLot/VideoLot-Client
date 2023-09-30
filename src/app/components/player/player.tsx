@@ -17,9 +17,11 @@ export default function Player(props: PlayerData) {
         isFullScreen: false,
         duration: props.videoTrack.trackInfo.duration / 1000,
         currentTime: 0,
+        volume: 0.5,
         setState: setPlayerState,
         setFullscreen: setFullscreen,
-        setCurrentTime: setCurrentTime
+        setCurrentTime: setCurrentTime,
+        setVolume: setVolume,
     } as PlayerContextData);
     const [loaders, setLoaders] = useState<SourceLoader[]>([]);
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -105,6 +107,15 @@ export default function Player(props: PlayerData) {
         
     }
 
+    function setVolume(val: number) {
+        const video = videoRef.current;
+        if (!video) {
+            return;
+        }
+
+        video.volume = val;
+    }
+
     function updateContext(context: any) {
         const newContext = {} as PlayerContextData; 
         Object.assign(newContext, playerContext);
@@ -160,12 +171,22 @@ export default function Player(props: PlayerData) {
         updateContext({currentTime});
     }
 
+    function handleVolumeChange() {
+        const video = videoRef.current;
+        if (!video) {
+            return;
+        }
+
+        updateContext({volume: video.volume});
+    }
+
     return <>
         <div ref={containerRef} className='relative w-full md:w-3/4'>
             <video ref={videoRef} 
                 onPlay={() => updateContext({state: PlayerState.Playing})}
                 onPause={() => updateContext({state: PlayerState.Paused})}
                 onTimeUpdate={handleTimeUpdated}
+                onVolumeChange={handleVolumeChange}
                 poster='/PreviewPlaceholder.png'
                 className='w-full aspect-video'
                 >

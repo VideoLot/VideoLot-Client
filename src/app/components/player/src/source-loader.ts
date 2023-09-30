@@ -37,7 +37,7 @@ export class SourceLoader {
     }
 
     public async setPlaybackPosition(pos: number) {
-        let bufferedTime = 0;   
+        let bufferedTime = 0;
 
         const range = isInRange(pos, this._buffer.buffered);
         let timeRangeEnd = pos;

@@ -2,10 +2,21 @@
 
 import { useRef, useContext, useState } from "react";
 import { PlayerContext, PlayerState } from "../player-context";
+import { Volume } from './volume';
 
 export function BottomPanel() {
     const timelineRef = useRef<HTMLInputElement>(null);
-    const { state, duration, currentTime, isFullScreen, setState, setCurrentTime, setFullscreen } = useContext(PlayerContext);
+    const { 
+        state, 
+        duration, 
+        currentTime, 
+        isFullScreen, 
+        volume, 
+        setState, 
+        setCurrentTime, 
+        setFullscreen, 
+        setVolume 
+    } = useContext(PlayerContext);
     const [timelineChanging, setTimelineChanging] = useState(false);
     
     let playbackBg;
@@ -70,6 +81,12 @@ export function BottomPanel() {
         setFullscreen(!isFullScreen);
     }
 
+    function handleVolumeChange(val: number) {
+        if (setVolume) {
+            setVolume(val);
+        }
+    }
+
     const formatTime = (time: number) => {
         let hours = 0;
         let minutes = 0;
@@ -112,7 +129,8 @@ export function BottomPanel() {
             <div className='flex flex-row h-full'>
                 <div className='flex flex-row w-full h-full items-center'>
                     <button onClick={handlePlayButtonClick} className={`h-full w-16 bg-contain bg-center ${playbackBg}`}></button>
-                    <div className='text-white font-thin'>{`${formatTime(currentTime)} | ${formatTime(duration)}`}</div>
+                    <Volume onValueChange={handleVolumeChange} value={volume}></Volume>
+                    <div className='text-white font-thin contents'>{`${formatTime(currentTime)} | ${formatTime(duration)}`}</div>
                 </div>
                 <div className='flex flex-row w-full h-full justify-end items-center'>
                     <button onClick={handleFullscreenClick} className={`h-full w-16 bg-contain bg-center ${fullscreenBg}`}></button>

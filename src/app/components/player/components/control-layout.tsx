@@ -65,8 +65,8 @@ export default function ControlsLayout() {
                             <BottomPanel></BottomPanel>
                         </div>
                     </>
-                : 
-                null}                
+                :
+                null}
         </div>);
 }
 
