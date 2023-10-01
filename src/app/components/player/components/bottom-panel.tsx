@@ -76,7 +76,7 @@ export function BottomPanel() {
     }
 
     function handleFullscreenClick() {
-        if(!setFullscreen) {
+        if (!setFullscreen) {
             return;
         }
 

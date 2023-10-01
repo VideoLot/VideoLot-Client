@@ -13,7 +13,7 @@ export default function Player(props: PlayerData) {
     const bufferPullRef = useRef<BufferPull>();
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [playerContext, setPlayerContext] = useState({
-        state: getCurrentState(),
+        state: PlayerState.Paused,//getCurrentState(),
         isFullScreen: false,
         duration: props.videoTrack.trackInfo.duration / 1000,
         currentTime: 0,
@@ -119,16 +119,15 @@ export default function Player(props: PlayerData) {
     }
 
     function setMuted(val: boolean) {
-        const video = videoRef.current;
+        const video =  videoRef.current;
         if (!video) {
             return;
         }
 
         if (val !== video.muted) {
             video.muted = val;
-            
+            updateContext({muted: val, state: getCurrentState()});
         }
-        updateContext({muted: video.muted});
     }
 
     function updateContext(context: any) {

@@ -30,7 +30,7 @@ export function Volume(props: VolumeProps) {
 
     const bgTexture = isMuted? 'bg-volume-off-texture' : 'bg-volume-on-texture';
 
-    return <div className='flex flex-row h-full contents'>
+    return <div className='contents flex-row h-full '>
         <button onClick={handleMuteClick} className={`h-full aspect-square bg-center bg-cover ${bgTexture}`}></button>
         <input type='range' min={0} max={1} step='any' defaultValue={props.value} onChange={handleValueChange}></input>
     </div>
