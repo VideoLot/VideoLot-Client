@@ -209,11 +209,11 @@ export default function Player(props: PlayerData) {
                 <ControlsLayout/>
             </PlayerContext.Provider>
         </div>
-        <div>
+        {/* <div>
         {
             loaders.map(x=><LoaderState key={x.description} loader={x}></LoaderState>)
         }
-        </div>
+        </div> */}
     </>
 }
 

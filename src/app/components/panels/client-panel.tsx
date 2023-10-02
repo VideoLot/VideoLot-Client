@@ -33,7 +33,7 @@ export default function ClientPanel(props: ClientPanelProps) {
     const [rightArrowVisible, setRightArrowVisible]  = useState(true);
 
 
-    // after component mounting load content until panel is filled or content finished
+    // after component mounted load content until panel is filled or content finished
     useEffect(() => {
         const loadUntilFull = async ()=> {
             const contentPanel = contentPanelRef.current;
@@ -46,6 +46,7 @@ export default function ClientPanel(props: ClientPanelProps) {
             const pages = pagesRef.current;
     
             if(contentPanel.scrollWidth >= viewportPanel.clientWidth) { 
+                handlePanelScroll();
                 return; // panel is filled
             }
     
@@ -59,6 +60,7 @@ export default function ClientPanel(props: ClientPanelProps) {
             }
     
             if (pageForLoad === null) {
+                handlePanelScroll();
                 return; // content is over
             }
             pagesRef.current = await loadPageOfVideo(pageForLoad, props.pageSize);
@@ -79,7 +81,7 @@ export default function ClientPanel(props: ClientPanelProps) {
         </div>
     }
 
-    const handlePanelScroll = async (e: React.UIEvent<HTMLDivElement>) => {
+    const handlePanelScroll = async () => {
         const contentPanel = contentPanelRef.current;
         const viewportPanel = viewportPanelRef.current;
         const pages = pagesRef.current;
