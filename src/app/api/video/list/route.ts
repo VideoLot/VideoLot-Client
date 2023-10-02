@@ -31,65 +31,6 @@ export async function POST(req: NextRequest) {
         return new NextResponse(null, {status: 400, headers})
     }
 
-    // if (content.type === PanelFilterType.Categories) {
-    //     const filter = content.filter as PanelRequestVariant[];
-    //     const variants = [];
-    //     for (const variant of filter) {
-    //         const inCategories  = [];
-    //         const outCategories = [];
-    //         for (const category of variant.categories) {
-    //             if (category.not) {
-    //                 outCategories.push(category.id);
-    //             } else {
-    //                 inCategories.push(category.id);
-    //             }
-    //         }
-
-    //         if(variant.isStrict) {
-    //             variants.push({
-    //                 categories: {
-    //                     every: {id: {in: inCategories}}
-    //                 }
-    //             });
-    //         } else {
-    //             const requireEach = variant.categories.map(x => {
-    //                 return {
-    //                     categories: {
-    //                         some: {id: x.id}
-    //                     }
-    //                 };
-    //             });
-    //             variants.push({
-    //                 AND: [
-    //                     ...requireEach,
-    //                     {
-    //                         categories: {
-    //                             none: {
-    //                                 id: {in: outCategories}
-    //                             }
-    //                         }
-    //                     }
-    //                 ]
-    //             });
-    //         }
-    //     }
-        
-    //     const result = await prisma.videoData.findMany({
-    //         include: { categories: true },
-    //         where: {
-    //             OR: variants
-    //         }
-    //     });
-    //     return NextResponse.json(result, {headers});
-    // }
-
-    // if (content.type === PanelFilterType.List) {
-    //     const list = content.filter as string[];
-    //     const result = await prisma.videoData.findMany({
-    //         where: {id: {in: list}}
-    //     });
-    //     return NextResponse.json(result, {headers});
-    // }
     const result = await GetPageOfVideo(pageSize, pageNumber, content);
     return NextResponse.json(result, {headers});
 }
