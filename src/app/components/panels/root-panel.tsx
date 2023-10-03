@@ -2,6 +2,7 @@ import { prisma } from '@/utils/db'
 import { PanelType } from '@videolot/videolot-prisma'
 import { PanelContentData } from '../../types';
 import ServerPanel from './server-panel';
+import PanelOverlay from './panel-overlay';
 
 interface RootPanelProps {
     path: string
@@ -25,15 +26,20 @@ export default async function RootPanel( props: RootPanelProps) {
         where: {id: {in: panelIds}}
     });
     return <>
-        {
-            panels.map(x=> (<ServerPanel id={x.id}
+    {
+        panels.map(x=> (
+        <PanelOverlay panel={x}>
+            <ServerPanel id={x.id}
                 type={x.type}
                 path={x.path} 
                 content={x.content} 
                 title={x.title} 
                 version={x.version} 
                 createdAt={x.createdAt} 
-                updatedAt={x.updatedAt}></ServerPanel>))
-        }
+                updatedAt={x.updatedAt}/>
+        </PanelOverlay>
+            
+        ))
+    }
     </>
 }

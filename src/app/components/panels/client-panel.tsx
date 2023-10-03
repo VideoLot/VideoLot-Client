@@ -1,9 +1,7 @@
 'use client'
 
 import { Panel, VideoData } from '@videolot/videolot-prisma';
-import SettingsWrapper from '../settings-wrapper';
 import { useEffect, useRef, useState } from 'react';
-import PanelSettings from './panel-settings';
 import Preview from '../preview';
 import ArrowButton, { ArrowDirection } from '../arrow-button';
 import { VIDEOS_LIST } from '@/app/constants';
@@ -68,18 +66,6 @@ export default function ClientPanel(props: ClientPanelProps) {
         loadUntilFull();
 
     }, [panelVideos]);
-
-    const panelSettings = () => {
-        return <div className='p-2 pt-0'>
-            <PanelSettings panel={props.panel}></PanelSettings>
-        </div>      
-    }
-
-    const panelHeader = () => {
-        return <div className='flex px-2 items-center'>
-            <h1>Panel settings</h1>
-        </div>
-    }
 
     const handlePanelScroll = async () => {
         const contentPanel = contentPanelRef.current;
@@ -164,39 +150,35 @@ export default function ClientPanel(props: ClientPanelProps) {
     }
 
     return (
-        <SettingsWrapper popupTitle={panelHeader()} settings={panelSettings()}>
+        <div>
             <div>
-                <div>
-                    <h2>{props.panel.title}</h2>
-                </div>
-                <div ref={viewportPanelRef} className='relative flex flex-row items-center'>
-                    {
-                        leftArrowVisible ?                     
-                            <div className='absolute -left-10 h-1/3 aspect-square z-50'>
-                                <ArrowButton direction={ArrowDirection.Left} onClick={handleLeftArrowClick}></ArrowButton>
-                            </div> 
-                            : 
-                            null
-                    }
-                    <div ref={contentPanelRef} onScroll={handlePanelScroll} className='flex flex-nowrap space-x-1 md:space-x-2 overflow-x-auto'>
-                        { 
-                            panelVideos.map((x)=> (
-                            <Preview key={x.id} previewData={x}/>
-                            ))
-                        }
-                    </div>
-                    {
-                        rightArrowVisible ?
-                            <div className='absolute -right-10 h-1/3 aspect-square z-50'>
-                                <ArrowButton direction={ArrowDirection.Right} onClick={handleRightArrowClick}></ArrowButton>
-                            </div>
-                            :
-                            null
-                    }
-                    
-                </div>
-                
+                <h2>{props.panel.title}</h2>
             </div>
-        </SettingsWrapper> 
-    )
+            <div ref={viewportPanelRef} className='relative flex flex-row items-center'>
+                {
+                    leftArrowVisible ?                     
+                        <div className='absolute -left-10 h-1/3 aspect-square z-50'>
+                            <ArrowButton direction={ArrowDirection.Left} onClick={handleLeftArrowClick}></ArrowButton>
+                        </div> 
+                        : 
+                        null
+                }
+                <div ref={contentPanelRef} onScroll={handlePanelScroll} className='flex flex-nowrap space-x-1 md:space-x-2 overflow-x-auto md:pb-1'>
+                    { 
+                        panelVideos.map((x)=> (
+                        <Preview key={x.id} previewData={x}/>
+                        ))
+                    }
+                </div>
+                {
+                    rightArrowVisible ?
+                        <div className='absolute -right-10 h-1/3 aspect-square z-50'>
+                            <ArrowButton direction={ArrowDirection.Right} onClick={handleRightArrowClick}></ArrowButton>
+                        </div>
+                        :
+                        null
+                }
+                
+            </div>              
+        </div>);
 }

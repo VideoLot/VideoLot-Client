@@ -1,14 +1,14 @@
 'use client'
 
 import { PageOfVideos, PanelContentData, PanelFilterType, PanelRequestVariant } from "@/app/types";
-import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from "react";
-import { CategoryFilter } from './category-filter';
+import { ChangeEvent,  useEffect, useRef, useState } from "react";
+import { CategoryFilter } from './filters/category-filter';
 import { Panel, VideoData } from '@videolot/videolot-prisma';
-import ViButton, { ViButtonColor } from '../vi-button';
+import ViButton, { ViButtonColor } from '../../vi-button';
 import { post, put } from '@/utils/fetch';
 import { THIS_PANEL, VIDEOS_LIST } from '@/app/constants';
-import Preview from '../preview';
-import ListFilter from './list-filter';
+import Preview from '../../preview';
+import ListFilter from './filters/list-filter';
 
 interface PanelSettingsProps {
     panel: Panel
@@ -79,7 +79,6 @@ export default function PanelSettings(props: PanelSettingsProps) {
             setFilter(content.filter);
         }
     }
-
 
     return (
         <div className='space-y-2'>

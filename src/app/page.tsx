@@ -1,6 +1,7 @@
 
 import ServerPanel from '@/app/components/panels/server-panel'
 import RootPanel from './components/panels/root-panel'
+import PanelOverlay from './components/panels/panel-overlay'
 
 export default function Home() {
   return (

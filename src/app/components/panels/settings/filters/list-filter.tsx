@@ -2,7 +2,7 @@
 
 import { VideoData } from '@videolot/videolot-prisma';
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
-import Preview from '../preview';
+import Preview from '@/app/components/preview';
 import { VIDEOS_LIST } from '@/app/constants';
 import { get } from '@/utils/fetch';
 

@@ -3,7 +3,7 @@
 import { CategoryFilter, NameValue, PanelRequestVariant } from '@/app/types';
 import { ChangeEvent, useEffect, useState } from 'react';
 import Image from 'next/image';
-import ViButton, { ViButtonColor } from '../vi-button';
+import ViButton, { ViButtonColor } from '../../../vi-button';
 import { CATEGORIES } from '@/app/constants';
 import { get } from '@/utils/fetch';
 import { Category } from '@videolot/videolot-prisma';
