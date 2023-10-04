@@ -1,14 +1,14 @@
 import { prisma } from '@/utils/db'
 import { PanelType } from '@videolot/videolot-prisma'
 import { PanelContentData } from '../../types';
-import ServerPanel from './server-panel';
 import PanelOverlay from './panel-overlay';
+import ServerPanel from './server-panel';
 
 interface RootPanelProps {
     path: string
 }
 
-export default async function RootPanel( props: RootPanelProps) {
+export default async function ServerRootPanel( props: RootPanelProps) {
     const rootConfig = await prisma.panel.findFirst({
         where: {
             type: PanelType.Root,
@@ -25,10 +25,10 @@ export default async function RootPanel( props: RootPanelProps) {
     const panels = await prisma.panel.findMany({
         where: {id: {in: panelIds}}
     });
+
     return <>
     {
         panels.map(x=> (
-        <PanelOverlay panel={x}>
             <ServerPanel id={x.id}
                 type={x.type}
                 path={x.path} 
@@ -36,10 +36,7 @@ export default async function RootPanel( props: RootPanelProps) {
                 title={x.title} 
                 version={x.version} 
                 createdAt={x.createdAt} 
-                updatedAt={x.updatedAt}/>
-        </PanelOverlay>
-            
-        ))
+                updatedAt={x.updatedAt}/>))
     }
     </>
 }

@@ -27,8 +27,18 @@ class ViPanelRoute {
         }
         return NextResponse.json(panel);
     }
+
+    @minimalRole(UserRole.Admin)
+    async POST(req:NextRequest) {
+        const newData = await req.json();
+        newData.version = 1;
+        const newPanel = await prisma.panel.create({data: newData});
+
+        return NextResponse.json(newPanel);
+    }
 }
 
 const route = new ViPanelRoute();
 export const GET = route.GET;
 export const PUT = route.PUT;
+export const POST = route.POST;

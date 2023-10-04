@@ -12,6 +12,7 @@ import ListFilter from './filters/list-filter';
 
 interface PanelSettingsProps {
     panel: Panel
+    onPanelChange?: (value: Panel)=>void
 }
 
 export default function PanelSettings(props: PanelSettingsProps) {
@@ -77,6 +78,10 @@ export default function PanelSettings(props: PanelSettingsProps) {
             setTitle(newData.title || '');
             setFilterType(content.type);
             setFilter(content.filter);
+            
+            if (props.onPanelChange) {
+                props.onPanelChange(newData);
+            }
         }
     }
 

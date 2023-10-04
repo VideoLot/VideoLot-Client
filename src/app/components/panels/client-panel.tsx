@@ -10,15 +10,15 @@ import { PageOfVideos, PanelContentData } from '@/app/types';
 
 export interface ClientPanelProps {
     pageSize: number
-    page: number
-    totalPages: number
+    page?: number
+    totalPages?: number
     panel: Panel
     pageContent?: VideoData[]
 }
 
 type PageRange = {
-    first: number,
-    last: number
+    first?: number,
+    last?: number
 }
 
 export default function ClientPanel(props: ClientPanelProps) {
@@ -27,8 +27,10 @@ export default function ClientPanel(props: ClientPanelProps) {
     const pagesRef = useRef<PageRange>({first: props.page, last: props.page});
 
     const [panelVideos, setPanelVideos] = useState<VideoData[]>(props.pageContent || []);
+    const [totalPages, setTotalPages] = useState(props.totalPages || 1);
     const [leftArrowVisible, setLeftArrowVisible] = useState(true);
     const [rightArrowVisible, setRightArrowVisible]  = useState(true);
+    const [panel, setPanel] = useState<Panel | null>(null);
 
 
     // after component mounted load content until panel is filled or content finished
@@ -48,13 +50,19 @@ export default function ClientPanel(props: ClientPanelProps) {
                 return; // panel is filled
             }
     
-            let pageForLoad = null;
-            if (pages.last === props.totalPages - 1) {
-                if (pages.first !== 0) {
-                    pageForLoad = pages.first - 1;
-                }
+            let pageForLoad :number | null = props.page || 0;
+            if (pages.first === undefined || pages.last === undefined) {
+
             } else {
-                pageForLoad = pages.last + 1;
+                if (pages.last === totalPages - 1) {
+                    if (pages.first !== 0) {
+                        pageForLoad = pages.first - 1;
+                    } else {
+                        pageForLoad = null;
+                    }
+                } else {
+                    pageForLoad = pages.last + 1;
+                }
             }
     
             if (pageForLoad === null) {
@@ -63,9 +71,25 @@ export default function ClientPanel(props: ClientPanelProps) {
             }
             pagesRef.current = await loadPageOfVideo(pageForLoad, props.pageSize);
         }
+        
         loadUntilFull();
 
     }, [panelVideos]);
+
+    useEffect(()=> {
+        if (panel) {
+            const pages = pagesRef.current;
+            if (!pages) {
+                return;
+            }
+    
+            pages.first = undefined;
+            pages.last = undefined;
+            setPanelVideos([]);
+        }
+        setPanel(props.panel);
+    }, [props.panel]);
+
 
     const handlePanelScroll = async () => {
         const contentPanel = contentPanelRef.current;
@@ -130,19 +154,25 @@ export default function ClientPanel(props: ClientPanelProps) {
 
         if (response.ok) {
             let pages = {...pagesRef.current};
-            const {videos} = await response.json() as unknown as PageOfVideos;
+            const {videos, totalVideos} = await response.json() as unknown as PageOfVideos;
             let videoUpdate: VideoData[];
-            if (page < pages.first) {
-                videoUpdate = [...videos, ...panelVideos];
-                pages = {first: page, last: pages.last};
+            if (pages.first !== undefined && pages.last !== undefined) {
+                if (page < pages.first) {
+                    videoUpdate = [...videos, ...panelVideos];
+                    pages = {first: page, last: pages.last};
+                }
+                if (page > pages.last) {
+                    videoUpdate = [...panelVideos, ...videos];
+                    pages = ({first: pages.first, last: page});
+                }
+                else { 
+                    videoUpdate = [...panelVideos];
+                }
+            } else {
+                videoUpdate = videos;
+                pages = {first: page, last: page};
             }
-            if(page > pages.last) {
-                videoUpdate = [...panelVideos, ...videos];
-                pages = ({first: pages.first, last: page});
-            }
-            else { 
-                videoUpdate = [...panelVideos];
-            }
+
             setPanelVideos(videoUpdate)
             return pages;
         }
@@ -178,7 +208,6 @@ export default function ClientPanel(props: ClientPanelProps) {
                         :
                         null
                 }
-                
             </div>              
         </div>);
 }
