@@ -27,7 +27,7 @@ class Send {
     withJsonBody(data: object) {
         this._body = JSON.stringify(data);
         this.withHeader('Content-Type', 'application/json');
-
+        this.withHeader('Content-Length', this._body.length.toString());
         return this;
     }
 

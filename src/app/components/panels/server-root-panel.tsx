@@ -1,23 +1,16 @@
 import { prisma } from '@/utils/db'
-import { PanelType } from '@videolot/videolot-prisma'
+import { Panel } from '@videolot/videolot-prisma'
 import { PanelContentData } from '../../types';
-import PanelOverlay from './panel-overlay';
 import ServerPanel from './server-panel';
 
 interface RootPanelProps {
-    path: string
+    panel: Panel
 }
 
-export default async function ServerRootPanel( props: RootPanelProps) {
-    const rootConfig = await prisma.panel.findFirst({
-        where: {
-            type: PanelType.Root,
-            path: props.path
-        }
-    });
-    const data = rootConfig?.content as unknown as PanelContentData;
+export default async function ServerRootPanel( {panel}: RootPanelProps) {
+    const data = panel.content as unknown as PanelContentData;
 
-    if (!rootConfig || !data) {
+    if (!panel || !data) {
         return <h1> ERROR </h1>
     }
     

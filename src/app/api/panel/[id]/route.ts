@@ -36,9 +36,16 @@ class ViPanelRoute {
 
         return NextResponse.json(newPanel);
     }
+
+    @minimalRole(UserRole.Admin)
+    async DELETE(req:NextRequest, {params}: {params: IdParam}) {
+        await prisma.panel.delete({where: {id: params.id}});
+        return new NextResponse(null, {status: 200});
+    }
 }
 
 const route = new ViPanelRoute();
 export const GET = route.GET;
 export const PUT = route.PUT;
 export const POST = route.POST;
+export const DELETE = route.DELETE;

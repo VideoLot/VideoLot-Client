@@ -13,7 +13,7 @@ export default function VideoUpload() {
 
     return (<ClientGuard 
         minimalRole={UserRole.Admin}
-        allowed={<Form/>}
+        children={<Form/>}
         restricted={<Error/>}/>);
 }
 

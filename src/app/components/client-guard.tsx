@@ -8,7 +8,7 @@ import { checkRole } from '@/utils/auth-utils';
 
 export interface GuardProps {
     minimalRole?: UserRole
-    allowed: React.ReactNode
+    children: React.ReactNode
     restricted: React.ReactNode
 }
 
@@ -22,7 +22,7 @@ export default function ClientGuard(props: GuardProps) {
     return (
     <>
         {isAllowed ? 
-            props.allowed : 
+            props.children : 
             props.restricted}   
     </>);
 }
