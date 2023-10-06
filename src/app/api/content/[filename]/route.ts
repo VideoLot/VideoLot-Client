@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createStorageApi } from 'videolot-cloud-wrapper';
+import { createStorageApi } from '@videolot/videolot-cloud-wrapper';
 
 const storage = createStorageApi();
 

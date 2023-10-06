@@ -1,7 +1,7 @@
 import { SegmentRequestBody } from '@/app/types';
 import { prisma } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
-import { createStorageApi, StorageApi } from 'videolot-cloud-wrapper';
+import { createStorageApi, StorageApi } from '@videolot/videolot-cloud-wrapper';
 
 const storage: StorageApi = createStorageApi();
 

@@ -180,7 +180,6 @@ export function ClientRootPanel({children, panel}: ClientRootPanelProps) {
                     :
                     null
                 }
-                
             </div>
         </ClientGuard>
         
