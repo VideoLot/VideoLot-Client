@@ -35,7 +35,7 @@
     "reactjs-popup": "^2.0.5",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2",
-    "@videolot/videolot-cloud-wrapper": "1.0.0"
+    "@videolot/videolot-cloud-wrapper": "1.0.3"
   },
   "devDependencies": {
     "next-auth": "^4.22.3",
